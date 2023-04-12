@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import styles from '../style';
 import {widthPercentage} from '/Responsive';
-import {JumpingTransition, SlideOutLeft} from 'react-native-reanimated';
 
 const SecondRoute = ({navigation}) => {
   const [speakers, setSpeakers] = useState([]);
@@ -21,15 +20,19 @@ const SecondRoute = ({navigation}) => {
     let tmp = [
       {
         name: '김나현',
+        image: '/assets/images/profile3.png',
       },
       {
         name: '김현기',
+        image: '/assets/images/profile2.png',
       },
       {
         name: '김지우',
+        image: '/assets/images/profile1.png',
       },
       {
         name: '남윤재',
+        image: '/assets/images/profile4.png',
       },
     ];
     setSpeakers(tmp);
@@ -69,18 +72,19 @@ const SecondRoute = ({navigation}) => {
                   }}>
                   <Image
                     source={require('/assets/images/modify.png')}
-                    style={styles.icon}
+                    style={[styles.icon, {width: widthPercentage(20),
+                      height: widthPercentage(20),}]}
                   />
                 </TouchableOpacity>
               </View>
-              <View style={styles.line} />
+              {i !== speakers.length - 1 && <View style={styles.line} />}
             </>
           ))}
         </View>
       </ScrollView>
       <TouchableOpacity
         onPress={() => {
-          return navigation.navigate('SpeakerList');
+          return navigation.navigate('Register');
         }}>
         <View style={styles.button}>
           <Text style={styles.btnText}>화자 추가하기</Text>

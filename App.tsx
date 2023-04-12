@@ -8,18 +8,13 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 import {createStackNavigator} from '@react-navigation/stack';
-import Main from './src/screens/home/Main';
-import SplashScreen from './src/screens/splash/Splash';
-import ChatRoom from './src/screens/chat/ChatRoom';
 import {NavigationContainer} from '@react-navigation/native';
+import Main from 'screens/home/Main';
+import SplashScreen from 'screens/splash/Splash';
+import ChatRoom from 'screens/chat/ChatRoom';
+import Register from 'screens/register/Register';
+
 
 const Stack = createStackNavigator();
 
@@ -62,6 +57,14 @@ const App = () => {
             }}
             name="ChatRoom"
             component={ChatRoom}
+          />
+          <Stack.Screen
+            options={{
+              title: '화자 등록',
+              headerTitleStyle: styles.subheaderText,
+            }}
+            name="Register"
+            component={Register}
           />
         </Stack.Navigator>
       </NavigationContainer>
