@@ -16,9 +16,9 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import {createStackNavigator} from '@react-navigation/stack';
-import Main from './src/screens/Main';
+import Main from './src/screens/home/Main';
 import SplashScreen from './src/screens/splash/Splash';
-import SpeakerList from './src/screens/speaker/SpeakerList';
+import ChatRoom from './src/screens/chat/ChatRoom';
 import {NavigationContainer} from '@react-navigation/native';
 
 const Stack = createStackNavigator();
@@ -57,11 +57,11 @@ const App = () => {
           />
           <Stack.Screen
             options={{
-              title: '화자 목록',
+              title: '대화방',
               headerTitleStyle: styles.subheaderText,
             }}
-            name="SpeakerList"
-            component={SpeakerList}
+            name="ChatRoom"
+            component={ChatRoom}
           />
         </Stack.Navigator>
       </NavigationContainer>

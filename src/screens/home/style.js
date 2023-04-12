@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import {widthPercentage, heightPercentage, fontPercentage} from '../Responsive';
+import {widthPercentage, heightPercentage, fontPercentage} from '../../Responsive';
 
 const styles = StyleSheet.create({
   container: {
@@ -12,12 +12,10 @@ const styles = StyleSheet.create({
     minHeight: '100%',
   },
   title: {
-    marginHorizontal: widthPercentage(20),
     includeFontPadding: false,
     color: '#000',
     fontSize: fontPercentage(19),
     fontWeight: 700,
-    marginTop: heightPercentage(10),
     paddingVertical: heightPercentage(15),
   },
   subtitle: {
@@ -68,7 +66,13 @@ const styles = StyleSheet.create({
     paddingVertical: heightPercentage(15),
     marginVertical: heightPercentage(15),
     backgroundColor: '#60AAEF',
-    borderRadius: 7,
+    borderRadius: 10,
+  },
+  btnText: {
+    includeFontPadding: false,
+    fontSize: fontPercentage(19),
+    fontWeight: '700',
+    color: '#fff',
   },
   line: {
     height: heightPercentage(1),
@@ -83,12 +87,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: heightPercentage(10),
     backgroundColor: '#E2E9FB',
     borderRadius: 7,
-  },
-  btnText: {
-    includeFontPadding: false,
-    fontSize: fontPercentage(16),
-    fontWeight: '700',
-    color: '#fff',
   },
   profileImg4: {
     width: widthPercentage(28),
@@ -120,6 +118,14 @@ const styles = StyleSheet.create({
   center: {
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  spaceTitle: {
+    marginTop: heightPercentage(10),
+    marginHorizontal: widthPercentage(20),
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   spaceB: {
