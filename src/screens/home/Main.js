@@ -3,11 +3,11 @@ import {Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import styles from './style';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
-import url from '../../utils/backend';
+import url from '/utils/backend';
 import axios from 'axios';
 import FirstRoute from './components/FirstRoute';
 import SecondRoute from './components/SecondRoute';
-import {widthPercentage, heightPercentage} from '../../Responsive';
+import {widthPercentage, heightPercentage} from '/Responsive';
 
 const Main = () => {
   const navigation = useNavigation();

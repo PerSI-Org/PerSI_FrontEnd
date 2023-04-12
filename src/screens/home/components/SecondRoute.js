@@ -11,7 +11,7 @@ import {
   Image,
 } from 'react-native';
 import styles from '../style';
-import {widthPercentage} from '../../../Responsive';
+import {widthPercentage} from '/Responsive';
 import {JumpingTransition, SlideOutLeft} from 'react-native-reanimated';
 
 const SecondRoute = ({navigation}) => {
@@ -48,7 +48,7 @@ const SecondRoute = ({navigation}) => {
               <View key={i} style={[styles.spaceB, {alignItems: 'center'}]}>
                 <View style={styles.row}>
                   <Image
-                    source={require('../../../assets/images/profile3.png')}
+                    source={require('/assets/images/profile3.png')}
                     style={[
                       {
                         width: widthPercentage(35),
@@ -68,7 +68,7 @@ const SecondRoute = ({navigation}) => {
                     return navigation.navigate('ChatRoom');
                   }}>
                   <Image
-                    source={require('../../../assets/images/modify.png')}
+                    source={require('/assets/images/modify.png')}
                     style={styles.icon}
                   />
                 </TouchableOpacity>

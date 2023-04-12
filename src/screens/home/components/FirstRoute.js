@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import styles from '../style';
 import axios from 'axios';
-import {widthPercentage} from '../../../Responsive';
+import {widthPercentage} from '/Responsive';
 
 const FirstRoute = ({navigation}) => {
   const [rooms, setRooms] = useState([]);
@@ -58,7 +58,7 @@ const FirstRoute = ({navigation}) => {
                 <View style={{marginRight: widthPercentage(10)}}>
                   {r.members.length === 1 ? (
                     <Image
-                      source={require('../../../assets/images/profile1.png')}
+                      source={require('/assets/images/profile1.png')}
                       style={styles.profileImg1}
                     />
                   ) : r.members.length === 2 ? (
@@ -70,7 +70,7 @@ const FirstRoute = ({navigation}) => {
                         justifyContent: 'space-between',
                       }}>
                       <Image
-                        source={require('../../../assets/images/profile3.png')}
+                        source={require('/assets/images/profile3.png')}
                         style={[
                           styles.profileImg2,
                           {
@@ -80,7 +80,7 @@ const FirstRoute = ({navigation}) => {
                         ]}
                       />
                       <Image
-                        source={require('../../../assets/images/profile4.png')}
+                        source={require('/assets/images/profile4.png')}
                         style={[
                           styles.profileImg2,
                           {
@@ -95,12 +95,12 @@ const FirstRoute = ({navigation}) => {
                     <>
                       <View style={styles.center}>
                         <Image
-                          source={require('../../../assets/images/profile1.png')}
+                          source={require('/assets/images/profile1.png')}
                           style={styles.profileImg4}
                         />
                         {r.members.length >= 4 && (
                           <Image
-                            source={require('../../../assets/images/profile2.png')}
+                            source={require('/assets/images/profile2.png')}
                             style={styles.profileImg4}
                           />
                         )}
@@ -108,11 +108,11 @@ const FirstRoute = ({navigation}) => {
 
                       <View style={styles.row}>
                         <Image
-                          source={require('../../../assets/images/profile3.png')}
+                          source={require('/assets/images/profile3.png')}
                           style={styles.profileImg4}
                         />
                         <Image
-                          source={require('../../../assets/images/profile4.png')}
+                          source={require('/assets/images/profile4.png')}
                           style={styles.profileImg4}
                         />
                       </View>
@@ -137,7 +137,7 @@ const FirstRoute = ({navigation}) => {
                       return navigation.navigate('SpeakerList');
                     }}>
                     <Image
-                      source={require('../../../assets/images/more.png')}
+                      source={require('/assets/images/more.png')}
                       style={styles.icon}
                     />
                   </TouchableOpacity>

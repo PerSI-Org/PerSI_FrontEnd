@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import {widthPercentage, heightPercentage, fontPercentage} from '../../Responsive';
+import {widthPercentage, heightPercentage, fontPercentage} from '/Responsive';
 
 const styles = StyleSheet.create({
   container: {
