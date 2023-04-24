@@ -50,6 +50,7 @@ const FirstRoute = ({navigation}) => {
         </View>
         {rooms.map((r, i) => (
           <TouchableOpacity
+            key={i}
             onPress={() => {
               return navigation.navigate('ChatRoom');
             }}>
@@ -149,7 +150,7 @@ const FirstRoute = ({navigation}) => {
       </ScrollView>
       <TouchableOpacity
         onPress={() => {
-          return navigation.navigate('ChatRoom');
+          return navigation.navigate('RecordConv');
         }}>
         <View style={styles.button}>
           <Text style={styles.btnText}>대화 생성하기</Text>

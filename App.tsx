@@ -14,6 +14,7 @@ import Main from 'screens/home/Main';
 import SplashScreen from 'screens/splash/Splash';
 import ChatRoom from 'screens/chat/ChatRoom';
 import Register from 'screens/register/Register';
+import RecordConv from 'screens/chat/RecordConv';
 
 
 const Stack = createStackNavigator();
@@ -65,6 +66,14 @@ const App = () => {
             }}
             name="Register"
             component={Register}
+          />
+          <Stack.Screen
+            options={{
+              title: '대화 녹음',
+              headerTitleStyle: styles.subheaderText,
+            }}
+            name="RecordConv"
+            component={RecordConv}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -1,8 +1,16 @@
 # PerSI Front-end
----
-### What is PerSI?
    
--- PerSI: Personalized Speaker Identification Application for Hearing-Impaired Users.
-   
-PerSI is a service that recognizes the individual voices of people and provides information about speakers to hearing-impaired people with speech content so that they can actively participate in various utterances in daily life without the help of their assistant. PerSI can help them identify the speaker's identity, even if they cannot hear their voice. This can be especially helpful in situations where there are multiple speakers, such as a group meeting or a conference call. Also, it can help Hearing-impaired individuals live independently by providing them with a tool to identify the speaker's identity without relying on a hearing individual's assistance. This can be particularly important for Hearing-impaired individuals who live alone or in a community where there are few other Hearing-impaired individuals.
-   
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org) and npm (Recommended: Use [nvm](https://github.com/nvm-sh/nvm))
+- [Watchman](https://facebook.github.io/watchman)
+- [Xcode 12](https://developer.apple.com/xcode)
+- [Cocoapods 1.10.1](https://cocoapods.org)
+- [JDK > 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+- [Android Studio and Android SDK](https://developer.android.com/studio)
+
+## execution
+- Go to your project's root folder and run `npm install`.
+- If you are using Xcode 12.5 or higher go to /ios and execute `pod install`
+- Go to your project's root folder and run `react-native run-ios` or `react-native run-android` to start PerSI!

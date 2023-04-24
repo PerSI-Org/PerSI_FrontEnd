@@ -47,8 +47,8 @@ const SecondRoute = ({navigation}) => {
         </View>
         <View style={styles.contentBox}>
           {speakers.map((s, i) => (
-            <>
-              <View key={i} style={[styles.spaceB, {alignItems: 'center'}]}>
+            <View key={i}>
+              <View style={[styles.spaceB, {alignItems: 'center'}]}>
                 <View style={styles.row}>
                   <Image
                     source={require('/assets/images/profile3.png')}
@@ -78,7 +78,7 @@ const SecondRoute = ({navigation}) => {
                 </TouchableOpacity>
               </View>
               {i !== speakers.length - 1 && <View style={styles.line} />}
-            </>
+            </View>
           ))}
         </View>
       </ScrollView>
