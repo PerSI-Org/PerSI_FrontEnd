@@ -1,6 +1,14 @@
-import styles from './style';
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, Math, TouchableOpacity, StyleSheet, Platform, SafeAreaView, Image} from 'react-native';
+import {
+  View,
+  Text,
+  Math,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+  Image,
+} from 'react-native';
 import {
   PERMISSIONS,
   RESULTS,
@@ -12,6 +20,9 @@ import Slider from '@react-native-community/slider';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import Icon from 'react-native-vector-icons/AntDesign';
 import PlayButton from './PlayButton';
+import styles from './style';
+import {widthPercentage, heightPercentage} from '/Responsive';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 
 Icon.loadFont();
 
@@ -48,7 +59,18 @@ const playlist = [
   },
 ];
 
-function ChatRoom({navigation}) {
+function ChatRoom({route}) {
+  const navigation = useNavigation();
+  const [chats, setChats] = useState([
+    {
+      name: '김나현',
+      time: '00:03',
+      contents: '안녕하세요!\n저는 김나현 입니다.',
+    },
+    {name: '김지우', time: '00:05', contents: '안녕하세요'},
+    {name: '김나현', time: '00:09', contents: '안녕하세요!'},
+    {name: '김나현', time: '00:12', contents: '안녕하세요!'},
+  ]);
   const [isAlreadyPlay, setisAlreadyPlay] = useState(false);
   const [duration, setDuration] = useState('00:00:00');
   const [timeElapsed, setTimeElapsed] = useState('00:00:00');
@@ -57,22 +79,21 @@ function ChatRoom({navigation}) {
   const [inprogress, setInprogress] = useState(false);
   const audioRecorderPlayer = useState(new AudioRecorderPlayer());
 
-
-  const changeTime = async (seconds) => {
+  const changeTime = async seconds => {
     // 50 / duration
     let seektime = (seconds / 100) * duration;
     setTimeElapsed(seektime);
     audioRecorderPlayer.seekToPlayer(seektime);
   };
 
-  const onStartPress = async (e) => {
+  const onStartPress = async e => {
     setisAlreadyPlay(true);
     setInprogress(true);
     const path = 'file://' + dirs + '/' + playlist[current_track].path;
     audioRecorderPlayer.startPlayer(path);
     audioRecorderPlayer.setVolume(1.0);
 
-    audioRecorderPlayer.addPlayBackListener(async (e) => {
+    audioRecorderPlayer.addPlayBackListener(async e => {
       if (e.current_position === e.duration) {
         audioRecorderPlayer.stopPlayer();
       }
@@ -85,12 +106,12 @@ function ChatRoom({navigation}) {
     });
   };
 
-  const onPausePress = async (e) => {
+  const onPausePress = async e => {
     setisAlreadyPlay(false);
     audioRecorderPlayer.pausePlayer();
   };
 
-  const onStopPress = async (e) => {
+  const onStopPress = async e => {
     await audioRecorderPlayer.stopPlayer();
     await audioRecorderPlayer.removePlayBackListener();
   };
@@ -101,7 +122,7 @@ function ChatRoom({navigation}) {
     if (current_index === playlist.length) {
       setCurrentTrack(1);
     } else {
-      setCurrentTrack((current_track) => current_track + 1);
+      setCurrentTrack(current_track => current_track + 1);
     }
     onStopPress().then(async () => {
       await onStartPress();
@@ -116,7 +137,7 @@ function ChatRoom({navigation}) {
     if (current_index === 0) {
       setCurrentTrack(5);
     } else {
-      setCurrentTrack((current_track) => current_track - 1);
+      setCurrentTrack(current_track => current_track - 1);
     }
     onStopPress().then(async () => {
       await onStartPress();
@@ -134,28 +155,45 @@ function ChatRoom({navigation}) {
     }
   };
 
+  useEffect(() => {
+    console.log(route.params.header);
+    navigation.setOptions({
+      title: route.params.header,
+      headerTitleStyle: {
+        alignSelf: 'center',
+        textAlign: 'center',
+      },
+    });
+  }, [navigation, route.params.header]);
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ alignItems: 'center' }}>
-        <View style={styles.titleContainer}>
-          <Text style={[styles.textLight, { fontSize: 12 }]}>PLAYLIST</Text>
-          <Text style={styles.text}>Instaplayer</Text>
-        </View>
-        <View style={styles.coverContainer}>
-          <Image
-            source={{
-              uri: playlist[current_track].cover,
-            }}
-            style={styles.cover}
-          />
-        </View>
-
-        <View style={styles.trackname}>
-          <Text style={[styles.textDark, { fontSize: 20, fontWeight: '500' }]}>
-            {playlist[current_track].title}
-          </Text>
-        </View>
-      </View>
+      <ScrollView style={styles.chatContainer}>
+        {chats.map((c, i) => (
+          <View style={styles.chatBox}>
+            <Image
+              source={require('/assets/images/profile3.png')}
+              style={[
+                {
+                  width: widthPercentage(35),
+                  height: widthPercentage(35),
+                  borderRadius: 30,
+                  marginRight: widthPercentage(7),
+                },
+              ]}
+            />
+            <View>
+              <View style={styles.row}>
+                <Text style={styles.nameText}>{c.name}</Text>
+                <Text style={styles.timeStamp}>{c.time}</Text>
+              </View>
+              <View style={styles.speech}>
+                <Text style={styles.contents}>{c.contents}</Text>
+              </View>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
       <View style={styles.seekbar}>
         <Slider
           minimumValue={0}
@@ -164,7 +202,7 @@ function ChatRoom({navigation}) {
           thumbStyle={styles.thumb}
           value={percent}
           minimumTrackTintColor="#93A8B3"
-          onValueChange={(seconds) => changeTime(seconds)}
+          onValueChange={seconds => changeTime(seconds)}
         />
         <View style={styles.inprogress}>
           <Text style={[styles.textLight, styles.timeStamp]}>
@@ -185,15 +223,11 @@ function ChatRoom({navigation}) {
           <Icon name="stepbackward" size={32} color="#93A8B3" />
         </TouchableOpacity>
         {!isAlreadyPlay ? (
-          <TouchableOpacity
-            style={styles.playButtonContainer}
-            onPress={() => onStartPress()}>
+          <TouchableOpacity onPress={() => onStartPress()}>
             <Icon name={'caretright'} size={32} color="#3D425C" />
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity
-            style={styles.playButtonContainer}
-            onPress={() => onPausePress()}>
+          <TouchableOpacity onPress={() => onPausePress()}>
             <Icon name={'pause'} size={32} color="#3D425C" />
           </TouchableOpacity>
         )}

@@ -52,7 +52,10 @@ const FirstRoute = ({navigation}) => {
           <TouchableOpacity
             key={i}
             onPress={() => {
-              return navigation.navigate('ChatRoom');
+              return navigation.navigate({
+                name: 'ChatRoom',
+                params: {header: r.title},
+              });
             }}>
             <View key={i} style={styles.contentBox}>
               <View style={styles.row}>

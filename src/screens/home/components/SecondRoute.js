@@ -15,6 +15,7 @@ import {widthPercentage} from '/Responsive';
 
 const SecondRoute = ({navigation}) => {
   const [speakers, setSpeakers] = useState([]);
+  const [peopleNum, setPeopleNum] = useState(4);
 
   useEffect(() => {
     let tmp = [
@@ -43,7 +44,7 @@ const SecondRoute = ({navigation}) => {
       <ScrollView>
         <View style={styles.spaceTitle}>
           <Text style={styles.title}>화자 목록</Text>
-          <Text style={styles.descript}>총 4명</Text>
+          <Text style={styles.descript}>총 {peopleNum}명</Text>
         </View>
         <View style={styles.contentBox}>
           {speakers.map((s, i) => (
@@ -58,8 +59,6 @@ const SecondRoute = ({navigation}) => {
                         height: widthPercentage(35),
                         borderRadius: 30,
                         marginRight: widthPercentage(7),
-                        borderColor: '#fff',
-                        borderWidth: 2,
                       },
                     ]}
                   />

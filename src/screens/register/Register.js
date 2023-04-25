@@ -8,12 +8,18 @@ import {
   Image,
 } from 'react-native';
 import styles from './style';
+import RecordModal from '/components/RecordModal';
+import ConfirmModal from '/components/ConfirmModal';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 const Register = () => {
+  const navigation = useNavigation();
   const [img, setImg] = useState('');
   const [name, setName] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
   // const uploadImg = () => {
   //   let body = new FormData();
@@ -51,7 +57,7 @@ const Register = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={{flexGrow: 1}}>
+      <ScrollView>
         <View style={styles.imgBox}>
           <TouchableOpacity
             style={styles.imgBtn}
@@ -109,7 +115,7 @@ const Register = () => {
           <View style={styles.spaceB}>
             <TouchableOpacity
               onPress={() => {
-                alert('record voice');
+                setIsModalVisible(true);
               }}>
               <View style={styles.recordingButton}>
                 <View style={styles.colCenter}>
@@ -140,12 +146,23 @@ const Register = () => {
       </ScrollView>
       <TouchableOpacity
         onPress={() => {
-          return navigation.navigate('ChatRoom');
+          setIsConfirmVisible(true);
         }}>
         <View style={styles.button}>
           <Text style={styles.btnText}>완 료</Text>
         </View>
       </TouchableOpacity>
+      <RecordModal visible={isModalVisible} setVisible={setIsModalVisible} />
+      <ConfirmModal
+        visible={isConfirmVisible}
+        setVisible={setIsConfirmVisible}
+        onPress={() => {
+          setIsConfirmVisible(false);
+          navigation.navigate('Main');
+        }}
+        title={'화자 등록이 완료되었습니다!'}
+        content={'등록된 화자는 화자 목록에서 확인할 수 있습니다.'}
+      />
     </View>
   );
 };

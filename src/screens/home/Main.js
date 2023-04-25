@@ -48,7 +48,7 @@ const Main = () => {
         />
       )}
       renderScene={renderScene}
-      onIndexChange={index => console.log(index)}
+      onIndexChange={setIndex}
       initialLayout={{width: '100%'}}
     />
   );

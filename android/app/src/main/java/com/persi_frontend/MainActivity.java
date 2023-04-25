@@ -1,4 +1,4 @@
-package com.persi_frontend;
+package com.PerSI_FrontEnd;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
