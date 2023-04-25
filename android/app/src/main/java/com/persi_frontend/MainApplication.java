@@ -1,4 +1,4 @@
-package com.persi_frontend;
+package com.PerSI_FrontEnd;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

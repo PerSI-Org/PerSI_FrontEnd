@@ -93,9 +93,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.persi_frontend"
+    namespace "com.PerSI_FrontEnd"
     defaultConfig {
-        applicationId "com.persi_frontend"
+        applicationId "com.PerSI_FrontEnd"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -166,5 +166,5 @@ dependencies {
         implementation jscFlavor
     }
 }
-
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle");
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
