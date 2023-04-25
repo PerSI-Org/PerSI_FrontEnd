@@ -136,8 +136,8 @@ const styles = StyleSheet.create({
   },
   selecetedText: {
     includeFontPadding: false,
-    fontSize: fontPercentage(15),
-    fontWeight: '700',
+    fontSize: fontPercentage(17),
+    fontWeight: '500',
     color: '#111',
   },
 });

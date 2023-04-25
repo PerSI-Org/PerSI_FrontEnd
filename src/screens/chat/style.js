@@ -4,7 +4,7 @@ import {widthPercentage, heightPercentage, fontPercentage} from '/Responsive';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'EAEAEC', //'#f4f6f9',
+    backgroundColor: '#f4f6f9',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     flexGrow: 1,
@@ -33,41 +33,16 @@ const styles = StyleSheet.create({
     borderColor: '#bbb',
     borderRadius: 40,
   },
-  textLight: {
-    color: '#B6B7BF',
-  },
-  text: {
-    color: '#8E97A6',
-  },
-  titleContainer: {alignItems: 'center', marginTop: 24},
-  textDark: {
-    color: '#3D425C',
-  },
   buttonContainer: {
     backgroundColor: '#fff',
     paddingVertical: heightPercentage(30),
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 16,
   },
-  coverContainer: {
-    marginTop: 32,
-    width: 250,
-    height: 250,
-    shadowColor: 'rgba(0, 0, 0, 0.1)',
-    shadowOffset: {
-      width: 0,
-      height: heightPercentage(1),
-    },
-    shadowRadius: 6,
-    shadowOpacity: 1,
-    elevation: 10,
-  },
-  cover: {
-    width: 250,
-    height: 250,
-    borderRadius: 125,
+  seekbar: {
+    paddingHorizontal: widthPercentage(30),
+    backgroundColor: '#fff',
   },
   track: {
     height: 2,
@@ -75,21 +50,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
   thumb: {
-    width: 8,
-    height: 8,
+    width: 5,
+    height: 5,
     backgroundColor: '#3D425C',
   },
-  timeStamp: {
+  timeText: {
     fontSize: 11,
     fontWeight: '500',
   },
-  seekbar: {margin: 32},
+  chatContainer: {
+    flexGrow: 1,
+    paddingHorizontal: widthPercentage(20),
+  },
   inprogress: {
     marginTop: -12,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  trackname: {alignItems: 'center', marginTop: 32},
   descText: {
     includeFontPadding: false,
     color: '#555',
@@ -107,6 +84,57 @@ const styles = StyleSheet.create({
     marginLeft: widthPercentage(5),
     paddingVertical: heightPercentage(5),
     paddingRight: widthPercentage(15),
+  },
+  chatBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    marginRight: widthPercentage(10),
+    marginTop: heightPercentage(25),
+  },
+  speech: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    backgroundColor: '#fff',
+    borderRadius: 13,
+    borderTopLeftRadius: 0,
+    paddingHorizontal: widthPercentage(12),
+    paddingVertical: heightPercentage(10),
+    marginRight: widthPercentage(10),
+    marginTop: heightPercentage(8),
+    shadowColor: 'rgba(0, 0, 0, 0.1)',
+    shadowOffset: {
+      width: 0,
+      height: heightPercentage(1),
+    },
+    shadowRadius: 6,
+    shadowOpacity: 1,
+    elevation: 10,
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  contents: {
+    includeFontPadding: false,
+    color: '#111',
+    fontSize: fontPercentage(17),
+    fontWeight: 500,
+    marginRight: widthPercentage(5),
+  },
+  nameText: {
+    includeFontPadding: false,
+    color: '#111',
+    fontSize: fontPercentage(18),
+    fontWeight: 600,
+    marginRight: widthPercentage(5),
+  },
+  timeStamp: {
+    includeFontPadding: false,
+    color: '#555',
+    fontSize: fontPercentage(16),
+    fontWeight: 300,
+    marginLeft: widthPercentage(5),
   },
 });
 

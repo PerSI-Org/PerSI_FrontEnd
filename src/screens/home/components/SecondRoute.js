@@ -59,8 +59,6 @@ const SecondRoute = ({navigation}) => {
                         height: widthPercentage(35),
                         borderRadius: 30,
                         marginRight: widthPercentage(7),
-                        borderColor: '#fff',
-                        borderWidth: 2,
                       },
                     ]}
                   />

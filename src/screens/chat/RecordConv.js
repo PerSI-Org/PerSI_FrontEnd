@@ -42,29 +42,6 @@ function RecordConv() {
       console.log(`에러 \n ${e}`);
     }
   };
-
-  
-  useEffect(() => {
-    navigation.setOptions({
-      title: '대화녹음',
-      headerStyle: {
-        backgroundColor: '#60AAEF',
-      },
-      headerTitleAlign: 'center',
-      // Header의 텍스트, 버튼 색상
-      headerTintColor: '#ffffff',
-      // 타이틀 텍스트의 스타일
-      headerTitleStyle: {
-        alignSelf: 'center',
-        textAlign: 'center',
-      },
-    });
-  }, [navigation]);
-
-  useEffect(() => {
-    checkRecord();
-  }, []);
-
   const onStartRecord = async () => {
     setIsFirst(false);
     setisAlreadyRecording(true);
@@ -99,7 +76,7 @@ function RecordConv() {
     setRecordSecs('00:00:00');
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
-    // setIsConfirmVisible(true);
+    setIsConfirmVisible(true);
     console.log(result);
   };
 
@@ -131,6 +108,28 @@ function RecordConv() {
     audioRecorderPlayer.stopPlayer();
     audioRecorderPlayer.removePlayBackListener();
   };
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: '대화녹음',
+      headerStyle: {
+        backgroundColor: '#60AAEF',
+      },
+      headerTitleAlign: 'center',
+      // Header의 텍스트, 버튼 색상
+      headerTintColor: '#ffffff',
+      // 타이틀 텍스트의 스타일
+      headerTitleStyle: {
+        alignSelf: 'center',
+        textAlign: 'center',
+      },
+    });
+  }, [navigation]);
+
+  useEffect(() => {
+    checkRecord();
+  }, []);
+
 
   return (
     <View style={styles.container}>
