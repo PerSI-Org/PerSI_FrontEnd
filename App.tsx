@@ -42,6 +42,7 @@ const App = () => {
           />
           <Stack.Screen
             options={{
+              headerTitleAlign: 'center',
               headerShown: true,
               title: 'PerSI',
               headerTitleAlign: 'center',
@@ -53,6 +54,7 @@ const App = () => {
           />
           <Stack.Screen
             options={{
+              headerTitleAlign: 'center',
               title: '대화방',
               headerTitleStyle: styles.subheaderText,
             }}
@@ -61,6 +63,7 @@ const App = () => {
           />
           <Stack.Screen
             options={{
+              headerTitleAlign: 'center',
               title: '화자 등록',
               headerTitleStyle: styles.subheaderText,
             }}
@@ -69,6 +72,7 @@ const App = () => {
           />
           <Stack.Screen
             options={{
+              
               title: '대화 녹음',
               headerTitleStyle: styles.subheaderText,
             }}

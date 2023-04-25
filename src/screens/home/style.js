@@ -37,14 +37,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     flexDirection: 'column',
-    borderRadius: 15,
+    borderRadius: 13,
     paddingHorizontal: widthPercentage(15),
     paddingVertical: heightPercentage(14),
     marginBottom: widthPercentage(10),
-    shadowColor: 'rgba(0, 0, 0, 0.25)',
+    shadowColor: 'rgba(0, 0, 0, 0.1)',
     shadowOffset: {
       width: 0,
-      height: heightPercentage(2),
+      height: heightPercentage(1),
     },
     shadowRadius: 6,
     shadowOpacity: 1,
@@ -133,6 +133,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
+  },
+  selecetedText: {
+    includeFontPadding: false,
+    fontSize: fontPercentage(15),
+    fontWeight: '700',
+    color: '#111',
   },
 });
 

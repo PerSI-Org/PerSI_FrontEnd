@@ -1,4 +1,3 @@
-import styles from './style';
 import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, Math, TouchableOpacity, StyleSheet, Platform, SafeAreaView, Image} from 'react-native';
 import {
@@ -12,6 +11,7 @@ import Slider from '@react-native-community/slider';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import Icon from 'react-native-vector-icons/AntDesign';
 import PlayButton from './PlayButton';
+import styles from './style';
 
 Icon.loadFont();
 

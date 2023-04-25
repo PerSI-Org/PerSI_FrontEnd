@@ -1,5 +1,4 @@
-# PerSI Front-end
-   
+# PerSI_FrontEnd Front-end
 
 ## Prerequisites
 
@@ -11,6 +10,7 @@
 - [Android Studio and Android SDK](https://developer.android.com/studio)
 
 ## execution
+
 - Go to your project's root folder and run `npm install`.
 - If you are using Xcode 12.5 or higher go to /ios and execute `pod install`
-- Go to your project's root folder and run `react-native run-ios` or `react-native run-android` to start PerSI!
+- Go to your project's root folder and run `react-native run-ios` or `react-native run-android` to start PerSI_FrontEnd!

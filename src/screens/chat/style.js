@@ -1,10 +1,5 @@
-import React from 'react';
 import {StyleSheet} from 'react-native';
-import {
-  widthPercentage,
-  heightPercentage,
-  fontPercentage,
-} from '../../Responsive';
+import {widthPercentage, heightPercentage, fontPercentage} from '/Responsive';
 
 const styles = StyleSheet.create({
   container: {
@@ -13,7 +8,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     flexGrow: 1,
-    minHeight: '100%',
+    height: '100%',
+  },
+  imageContainer: {
+    flexGrow: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: heightPercentage(10),
   },
   center: {
     flexDirection: 'row',
@@ -53,10 +55,14 @@ const styles = StyleSheet.create({
     marginTop: 32,
     width: 250,
     height: 250,
-    shadowColor: '#5D3F6A',
-    shadowOffset: {height: 15},
-    shadowRadius: 8,
-    shadowOpacity: 0.3,
+    shadowColor: 'rgba(0, 0, 0, 0.1)',
+    shadowOffset: {
+      width: 0,
+      height: heightPercentage(1),
+    },
+    shadowRadius: 6,
+    shadowOpacity: 1,
+    elevation: 10,
   },
   cover: {
     width: 250,

@@ -8,18 +8,23 @@ import {
   openSettings,
   PermissionsAndroid,
 } from 'react-native-permissions';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import Icon from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {widthPercentage} from '/Responsive';
+import ConfirmModal from '/components/ConfirmModal';
 
 Icon.loadFont();
 Ionicons.loadFont();
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
-function RecordConv({navigation}) {
+function RecordConv() {
+  const navigation = useNavigation();
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [isFirst, setIsFirst] = useState(true);
   const [isAlreadyRecording, setisAlreadyRecording] = useState(false);
+  const [isAlreadyPlay, setisAlreadyPlay] = useState(false);
   const [recordSecs, setRecordSecs] = useState(0);
   const [recordTime, setRecordTime] = useState('00:00:00');
   const [currentPositionSec, setCurrentPositionSec] = useState(0);
@@ -38,51 +43,25 @@ function RecordConv({navigation}) {
     }
   };
 
-  const runTimePermission = async () => {
-    if (Platform.OS === 'android') {
-      try {
-        const grants = await PermissionsAndroid.requestMultiple([
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-        ]);
-
-        console.log('write external stroage', grants);
-
-        if (
-          grants['android.permission.WRITE_EXTERNAL_STORAGE'] ===
-            PermissionsAndroid.RESULTS.GRANTED &&
-          grants['android.permission.READ_EXTERNAL_STORAGE'] ===
-            PermissionsAndroid.RESULTS.GRANTED &&
-          grants['android.permission.RECORD_AUDIO'] ===
-            PermissionsAndroid.RESULTS.GRANTED
-        ) {
-          console.log('Permissions granted');
-        } else {
-          console.log('All required permissions not granted');
-          return;
-        }
-      } catch (err) {
-        console.warn(err);
-        return;
-      }
-    }
-  };
+  
   useEffect(() => {
     navigation.setOptions({
       title: '대화녹음',
       headerStyle: {
         backgroundColor: '#60AAEF',
       },
+      headerTitleAlign: 'center',
       // Header의 텍스트, 버튼 색상
       headerTintColor: '#ffffff',
       // 타이틀 텍스트의 스타일
-      headerTitleStyle: {},
+      headerTitleStyle: {
+        alignSelf: 'center',
+        textAlign: 'center',
+      },
     });
   }, [navigation]);
 
   useEffect(() => {
-    runTimePermission();
     checkRecord();
   }, []);
 
@@ -120,12 +99,16 @@ function RecordConv({navigation}) {
     setRecordSecs('00:00:00');
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
+    // setIsConfirmVisible(true);
     console.log(result);
   };
 
   const onStartPlay = async () => {
+    onPauseRecord();
     console.log('onStartPlay');
     const msg = await audioRecorderPlayer.startPlayer();
+    audioRecorderPlayer.setVolume(1.0);
+    setisAlreadyPlay(true);
     console.log(msg);
     audioRecorderPlayer.addPlayBackListener(e => {
       setCurrentPositionSec(e.currentPosition);
@@ -137,11 +120,14 @@ function RecordConv({navigation}) {
   };
 
   const onPausePlay = async () => {
+    console.log('onPausePlay');
+    setisAlreadyPlay(false);
     await audioRecorderPlayer.pausePlayer();
   };
 
   const onStopPlay = async () => {
     console.log('onStopPlay');
+    setisAlreadyPlay(false);
     audioRecorderPlayer.stopPlayer();
     audioRecorderPlayer.removePlayBackListener();
   };
@@ -158,7 +144,7 @@ function RecordConv({navigation}) {
           <Text style={styles.timeText}>{recordTime}</Text>
         </View>
 
-        <View style={styles.center}>
+        <View style={styles.imageContainer}>
           <Image
             source={require('/assets/images/recording.png')}
             style={
@@ -178,9 +164,16 @@ function RecordConv({navigation}) {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => onStartRecord()}>
-          <Icon name="controller-play" size={32} color="#3D425C" />
-        </TouchableOpacity>
+        {!isFirst &&
+          (!isAlreadyPlay ? (
+            <TouchableOpacity onPress={() => onStartPlay()}>
+              <Icon name="controller-play" size={32} color="#3D425C" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={() => onPausePlay()}>
+              <Ionicons name="pause" size={32} color="#3D425C" />
+            </TouchableOpacity>
+          ))}
         {!isAlreadyRecording ? (
           <TouchableOpacity
             style={styles.playButtonContainer}
@@ -200,10 +193,22 @@ function RecordConv({navigation}) {
             <Ionicons name={'pause'} size={50} color="#3D425C" />
           </TouchableOpacity>
         )}
-        <TouchableOpacity onPress={() => onStopRecord()}>
-          <Icon name="controller-stop" size={32} color="#3D425C" />
-        </TouchableOpacity>
+        {!isFirst && (
+          <TouchableOpacity onPress={() => onStopRecord()}>
+            <Icon name="controller-stop" size={32} color="#3D425C" />
+          </TouchableOpacity>
+        )}
       </View>
+      <ConfirmModal
+        visible={isConfirmVisible}
+        setVisible={setIsConfirmVisible}
+        onPress={() => {
+          setIsConfirmVisible(false);
+          navigation.navigate('Main');
+        }}
+        title={'대화 녹음이 완료되었습니다!'}
+        content={'등록된 화자는 화자 목록에서 확인할 수 있습니다.'}
+      />
     </View>
   );
 }

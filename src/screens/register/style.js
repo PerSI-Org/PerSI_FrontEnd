@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     flexGrow: 1,
-    minHeight: '100%',
+    height: '100%',
   },
   imgBox: {
     marginTop: heightPercentage(45),
@@ -21,13 +21,13 @@ const styles = StyleSheet.create({
     marginBottom: heightPercentage(35),
   },
   profileImg: {
-    width: widthPercentage(80),
-    height: widthPercentage(80),
+    width: widthPercentage(90),
+    height: widthPercentage(90),
     borderRadius: 100,
   },
   iconCamera: {
-    width: widthPercentage(26),
-    height: widthPercentage(26),
+    width: widthPercentage(28),
+    height: widthPercentage(28),
     position: 'absolute',
     borderRadius: 50,
     bottom: 0,

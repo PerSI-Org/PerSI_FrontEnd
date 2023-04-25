@@ -9,7 +9,7 @@ const Splash = ({navigation, route}) => {
     try {
       setTimeout(() => {
         navigation.reset({routes: [{name: 'Main'}]});
-      }, 2000); /** 스플래시 시간 조절 (2초) **/
+      }, 1000); /** 스플래시 시간 조절 (1초) **/
     } catch (e) {
       console.warn(e);
     }
