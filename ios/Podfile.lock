@@ -340,6 +340,8 @@ PODS:
   - React-jsinspector (0.71.6)
   - React-logger (0.71.6):
     - glog
+  - react-native-document-picker (8.2.0):
+    - React-Core
   - react-native-image-picker (5.3.1):
     - React-Core
   - react-native-safe-area-context (4.5.1):
@@ -446,11 +448,13 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
+  - RNFS (2.20.0):
+    - React-Core
   - RNGestureHandler (2.9.0):
     - React-Core
   - RNPermissions (3.8.0):
     - React-Core
-  - RNReanimated (3.0.2):
+  - RNReanimated (3.1.0):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -540,6 +544,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
@@ -561,6 +566,7 @@ DEPENDENCIES:
   - RNAudioRecorderPlayer (from `../node_modules/react-native-audio-recorder-player`)
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNFastImage (from `../node_modules/react-native-fast-image`)
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -632,6 +638,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-document-picker:
+    :path: "../node_modules/react-native-document-picker"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-safe-area-context:
@@ -674,6 +682,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/masked-view"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNPermissions:
@@ -723,6 +733,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 7894956638ff3e00819dd3f9f6f4a84da38f2409
   React-jsinspector: d5ce2ef3eb8fd30c28389d0bc577918c70821bd6
   React-logger: 9332c3e7b4ef007a0211c0a9868253aac3e1da82
+  react-native-document-picker: 495c444c0c773c6e83a5d91165890ecb1c0a399a
   react-native-image-picker: ec9b713e248760bfa0f879f0715391de4651a7cb
   react-native-safe-area-context: f5549f36508b1b7497434baa0cd97d7e470920d4
   react-native-slider: 33b8d190b59d4f67a541061bb91775d53d617d9d
@@ -744,9 +755,10 @@ SPEC CHECKSUMS:
   RNAudioRecorderPlayer: 6638283925b46808310c9fdf803ebabc3abdbadc
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
+  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
   RNPermissions: 215c54462104b3925b412b0fb3c9c497b21c358b
-  RNReanimated: f0dd6b881808e635ef0673f89642937d6c141314
+  RNReanimated: b1220a0e5168745283ff5d53bfc7d2144b2cee1b
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d

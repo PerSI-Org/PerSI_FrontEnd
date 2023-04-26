@@ -170,7 +170,7 @@ function ChatRoom({route}) {
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.chatContainer}>
         {chats.map((c, i) => (
-          <View style={styles.chatBox}>
+          <View key={i} style={styles.chatBox}>
             <Image
               source={require('/assets/images/profile3.png')}
               style={[

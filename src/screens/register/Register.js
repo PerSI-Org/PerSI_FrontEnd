@@ -13,6 +13,14 @@ import ConfirmModal from '/components/ConfirmModal';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import DocumentPicker, {
+  DirectoryPickerResponse,
+  DocumentPickerResponse,
+  isInProgress,
+  types,
+} from 'react-native-document-picker';
+import * as RNFS from 'react-native-fs';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 const Register = () => {
   const navigation = useNavigation();
@@ -20,6 +28,7 @@ const Register = () => {
   const [name, setName] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  const [result, setResult] = useState([]);
 
   // const uploadImg = () => {
   //   let body = new FormData();
@@ -46,6 +55,7 @@ const Register = () => {
   //     });
   // };
 
+  // 프로필 사진 업로드
   const addImage = () => {
     launchImageLibrary({}, response => {
       if (response?.assets) {
@@ -53,6 +63,19 @@ const Register = () => {
         setImg(response.assets[0].uri);
       }
     });
+  };
+
+  const handleError = (err: unknown) => {
+    if (DocumentPicker.isCancel(err)) {
+      console.warn('cancelled');
+      // User cancelled the picker, exit any dialogs or menus and move on
+    } else if (isInProgress(err)) {
+      console.warn(
+        'multiple pickers were opened, only the last will be considered',
+      );
+    } else {
+      throw err;
+    }
   };
 
   return (
@@ -129,7 +152,12 @@ const Register = () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                alert('file upload');
+                DocumentPicker.pick({
+                  allowMultiSelection: true,
+                  type: types.audio,
+                })
+                  .then(setResult)
+                  .catch(handleError);
               }}>
               <View style={styles.recordingButton}>
                 <View style={styles.colCenter}>
@@ -142,6 +170,20 @@ const Register = () => {
               </View>
             </TouchableOpacity>
           </View>
+        </View>
+        <View style={styles.itemBox}>
+          <Text style={styles.filesTitle}>등록된 파일</Text>
+          {result &&
+            result.map((r, i) => (
+              <View key={i} style={styles.fileBox}>
+                <Image
+                  style={styles.fileImg}
+                  source={require('/assets/images/file.png')}
+                />
+                <Text>{r.name}</Text>
+                <Icon name="close" size={20} color="#3D425C" />
+              </View>
+            ))}
         </View>
       </ScrollView>
       <TouchableOpacity
