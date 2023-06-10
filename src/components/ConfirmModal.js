@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Image, Text, TouchableOpacity} from 'react-native';
+import {View, Image, Text, TouchableOpacity, TextInput} from 'react-native';
 import {widthPercentage, heightPercentage, fontPercentage} from '/Responsive';
 import Modal from 'react-native-modal';
 import styles from './style';
@@ -23,15 +23,15 @@ const ConfirmModal = ({
             <Text style={styles.text}>{content}</Text>
           </View>
           <View style={styles.spaceB}>
-            {isCancel?
+            {isCancel ? (
+              <TouchableOpacity
+                style={styles.calcelButton}
+                onPress={() => setVisible(false)}>
+                <Text style={styles.calcelBtnText}>취소</Text>
+              </TouchableOpacity>
+            ) : null}
             <TouchableOpacity
-              style={styles.calcelButton}
-              onPress={() => setVisible(false)}>
-              <Text style={styles.calcelBtnText}>취소</Text>
-            </TouchableOpacity>
-            :null}
-            <TouchableOpacity
-              style={isCancel? styles.button: styles.longButton}
+              style={isCancel ? styles.button : styles.longButton}
               onPress={onPress}>
               <Text style={styles.btnText}>확인</Text>
             </TouchableOpacity>

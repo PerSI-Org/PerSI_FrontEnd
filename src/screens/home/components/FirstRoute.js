@@ -11,29 +11,41 @@ import {
   Image,
 } from 'react-native';
 import styles from '../style';
+import url from '/utils/backend';
 import axios from 'axios';
 import {widthPercentage} from '/Responsive';
 
-const FirstRoute = ({navigation}) => {
+const FirstRoute = ({navigation, id}) => {
   const [rooms, setRooms] = useState([]);
 
+  const getMeeting = async () => {
+    try {
+      const res = await axios.get(url + '/meetings/');
+      console.log('all meetings ========', res.data);
+      // setRooms(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
+    getMeeting();
     let tmp = [
       {
-        title: '음성인식 회의1',
+        name: '음성인식 회의1',
         date: '2023.03.05',
         members: ['김나현', '김지우', '김현기', '남윤재'],
         duration: 35,
       },
-      {title: '김나현', date: '2023.03.04', members: ['김나현'], duration: 52},
+      {name: '김나현', date: '2023.03.04', members: ['김나현'], duration: 52},
       {
-        title: '음성인식 회의1',
+        name: '음성인식 회의1',
         date: '2023.03.02',
         members: ['김지우', '김현기', '남윤재'],
         duration: 63,
       },
       {
-        title: '금요일 닭갈비 밥약',
+        name: '금요일 닭갈비 밥약',
         date: '2023.02.27',
         members: ['김지우', '남윤재'],
         duration: 13,
@@ -41,6 +53,21 @@ const FirstRoute = ({navigation}) => {
     ];
     setRooms(tmp);
   }, []);
+
+  const getConvLists = async () => {
+    try {
+      const res = await axios.post(url + '/users/login', {
+        'email': email,
+        'password' : password,
+      });
+      console.log(res.data);
+      alert('성공');
+      navigation.reset({routes: [{name: 'Main'}]});
+    } catch (e) {
+      alert('실패');
+      console.log(e);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -54,7 +81,7 @@ const FirstRoute = ({navigation}) => {
             onPress={() => {
               return navigation.navigate({
                 name: 'ChatRoom',
-                params: {header: r.title},
+                params: {header: r.name},
               });
             }}>
             <View key={i} style={styles.contentBox}>
@@ -153,7 +180,7 @@ const FirstRoute = ({navigation}) => {
       </ScrollView>
       <TouchableOpacity
         onPress={() => {
-          return navigation.navigate('RecordConv');
+          return navigation.navigate({name: 'RecordConv', params: {id: id}});
         }}>
         <View style={styles.button}>
           <Text style={styles.btnText}>대화 생성하기</Text>

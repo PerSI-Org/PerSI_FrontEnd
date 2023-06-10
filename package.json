@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.18.1",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-community/slider": "^4.4.2",
     "@react-native-community/viewpager": "^5.0.11",
@@ -20,7 +21,9 @@
     "react": "18.2.0",
     "react-native": "0.71.6",
     "react-native-audio-recorder-player": "^3.5.3",
+    "react-native-document-picker": "^8.2.0",
     "react-native-fast-image": "^8.6.3",
+    "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-image-picker": "^5.3.1",
     "react-native-modal": "^13.0.1",

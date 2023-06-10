@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {widthPercentage, heightPercentage, fontPercentage} from '/Responsive';
+import { rotationHandlerName } from 'react-native-gesture-handler/lib/typescript/handlers/RotationGestureHandler';
 
 const styles = StyleSheet.create({
   container: {
@@ -15,7 +16,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: heightPercentage(10),
   },
   center: {
     flexDirection: 'row',
@@ -41,8 +41,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   seekbar: {
-    paddingHorizontal: widthPercentage(30),
-    backgroundColor: '#fff',
+    width: '100%',
   },
   track: {
     height: 2,
@@ -50,13 +49,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
   thumb: {
-    width: 5,
-    height: 5,
+    width: 2,
+    height: 2,
     backgroundColor: '#3D425C',
-  },
-  timeText: {
-    fontSize: 11,
-    fontWeight: '500',
   },
   chatContainer: {
     flexGrow: 1,
@@ -70,7 +65,7 @@ const styles = StyleSheet.create({
   descText: {
     includeFontPadding: false,
     color: '#555',
-    fontSize: fontPercentage(20),
+    fontSize: fontPercentage(30),
     fontWeight: 300,
     marginLeft: widthPercentage(5),
     paddingVertical: heightPercentage(5),
@@ -79,10 +74,10 @@ const styles = StyleSheet.create({
   timeText: {
     includeFontPadding: false,
     color: '#121212',
-    fontSize: fontPercentage(40),
-    fontWeight: 500,
+    fontSize: fontPercentage(60),
+    fontWeight: 300,
     marginLeft: widthPercentage(5),
-    paddingVertical: heightPercentage(5),
+    paddingTop: heightPercentage(5),
     paddingRight: widthPercentage(15),
   },
   chatBox: {
@@ -113,6 +108,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   row: {
+    width: '100%',
     flexDirection: 'row',
   },
   contents: {
@@ -135,6 +131,145 @@ const styles = StyleSheet.create({
     fontSize: fontPercentage(16),
     fontWeight: 300,
     marginLeft: widthPercentage(5),
+  },
+
+  modalContainer: {
+    marginHorizontal: widthPercentage(40),
+    paddingHorizontal: widthPercentage(20),
+    paddingVertical: widthPercentage(20),
+    width: widthPercentage(340),
+    backgroundColor: '#fff',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    borderRadius: 17,
+  },
+  modalImageContainer: {
+    marginHorizontal: widthPercentage(20),
+    marginVertical: widthPercentage(20),
+    backgroundColor: '#EAEAEC', //'#f4f6f9',
+    width: '100%',
+    padding: widthPercentage(15),
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 13,
+  },
+  scriptContainer: {
+    marginHorizontal: widthPercentage(20),
+    marginVertical: widthPercentage(20),
+    backgroundColor: '#EAEAEC', //'#f4f6f9',
+    width: '100%',
+    height: heightPercentage(300),
+    padding: widthPercentage(15),
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 13,
+  },
+  contentImage: {
+    width: widthPercentage(100),
+    height: widthPercentage(100),
+  },
+  title: {
+    textAlign: 'center',
+    includeFontPadding: false,
+    color: '#121212',
+    fontSize: fontPercentage(22),
+    fontWeight: 500,
+    marginLeft: widthPercentage(5),
+    paddingVertical: heightPercentage(10),
+    paddingRight: widthPercentage(15),
+  },
+  text: {
+    textAlign: 'center',
+    includeFontPadding: false,
+    color: '#555',
+    fontSize: fontPercentage(16),
+    fontWeight: 300,
+    marginLeft: widthPercentage(5),
+    paddingTop: heightPercentage(10),
+    paddingRight: widthPercentage(15),
+  },
+  spaceB: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  calcelButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '48%',
+    paddingVertical: heightPercentage(17),
+    paddingHorizontal: heightPercentage(50),
+    marginTop: heightPercentage(25),
+    backgroundColor: '#fff',
+    borderRadius: 7,
+    borderWidth: 1,
+    borderColor: '#60AAEF',
+  },
+  calcelBtnText: {
+    includeFontPadding: false,
+    fontSize: fontPercentage(19),
+    fontWeight: '700',
+    color: '#60AAEF',
+  },
+  button: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '48%',
+    paddingVertical: heightPercentage(17),
+    paddingHorizontal: heightPercentage(50),
+    marginTop: heightPercentage(25),
+    backgroundColor: '#60AAEF',
+    borderRadius: 7,
+  },
+  longButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    paddingVertical: heightPercentage(17),
+    paddingHorizontal: heightPercentage(50),
+    marginTop: heightPercentage(25),
+    backgroundColor: '#60AAEF',
+    borderRadius: 7,
+  },
+  btnText: {
+    includeFontPadding: false,
+    fontSize: fontPercentage(19),
+    fontWeight: '700',
+    color: '#fff',
+  },
+  itemBox: {
+    width: '100%',
+    marginTop: heightPercentage(10),
+    marginHorizontal: widthPercentage(20),
+  },
+  nameInputBox: {
+    width: '100%',
+    height: heightPercentage(50),
+    borderRadius: 10,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#dddddd',
+    marginTop: heightPercentage(5),
+    paddingLeft: widthPercentage(20),
+    marginLeft: widthPercentage(0),
+    color: '#121212',
+    fontSize: fontPercentage(17),
+  },
+  playBox: {
+    width: '100%',
+    paddingHorizontal: widthPercentage(30), 
+    paddingVertical: heightPercentage(5), 
+    borderRadius: 10,
+    marginVertical: heightPercentage(3),
+    backgroundColor: '#f2f3f9',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
 });
 
