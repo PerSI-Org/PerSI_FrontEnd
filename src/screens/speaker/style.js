@@ -33,6 +33,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
   },
+  filesTitle: {
+    includeFontPadding: false,
+    color: '#888',
+    fontSize: fontPercentage(17),
+    marginBottom: widthPercentage(6),
+    fontWeight: 700,
+  },
   title: {
     includeFontPadding: false,
     color: '#000',
@@ -121,6 +128,21 @@ const styles = StyleSheet.create({
     height: widthPercentage(40),
     borderRadius: 100,
     marginBottom: heightPercentage(20),
+  },
+  fileBox: {
+    justifyContent: 'space-between',
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: '#aaa',
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingVertical: heightPercentage(8),
+    paddingHorizontal: widthPercentage(10),
+    marginTop: heightPercentage(2),
+  },
+  fileImg: {
+    width: widthPercentage(25),
+    height: widthPercentage(25),
   },
 });
 

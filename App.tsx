@@ -13,9 +13,11 @@ import {NavigationContainer} from '@react-navigation/native';
 import Main from 'screens/home/Main';
 import SplashScreen from 'screens/splash/Splash';
 import ChatRoom from 'screens/chat/ChatRoom';
-import Register from 'screens/register/Register';
+import Register from 'screens/speaker/Register';
+import Modify from 'screens/speaker/Modify';
 import RecordConv from 'screens/chat/RecordConv';
-
+import Login from 'screens/login/Login';
+import Signup from 'screens/login/Signup';
 
 const Stack = createStackNavigator();
 
@@ -35,6 +37,26 @@ const App = () => {
             headerTitleStyle: styles.mainheaderText,
             headerBackTitleVisible: false,
           }}>
+          <Stack.Screen
+            options={{
+              title: '로그인',
+              headerShown: false,
+              headerTitleAlign: 'center',
+              headerTitleStyle: styles.mainheaderText,
+            }}
+            name="Login"
+            component={Login}
+          />
+          <Stack.Screen
+            options={{
+              title: '회원가입',
+              headerShown: false,
+              headerTitleAlign: 'center',
+              headerTitleStyle: styles.mainheaderText,
+            }}
+            name="Signup"
+            component={Signup}
+          />
           <Stack.Screen
             name="Splash"
             component={SplashScreen}
@@ -72,7 +94,15 @@ const App = () => {
           />
           <Stack.Screen
             options={{
-              
+              headerTitleAlign: 'center',
+              title: '화자 수정',
+              headerTitleStyle: styles.subheaderText,
+            }}
+            name="Modify"
+            component={Modify}
+          />
+          <Stack.Screen
+            options={{
               title: '대화 녹음',
               headerTitleStyle: styles.subheaderText,
             }}
