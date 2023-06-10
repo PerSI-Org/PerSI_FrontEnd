@@ -8,7 +8,7 @@ const Splash = ({navigation, route}) => {
   useEffect(() => {
     try {
       setTimeout(() => {
-        navigation.reset({routes: [{name: 'Main'}]});
+        navigation.reset({routes: [{name: 'Login'}]});
       }, 1000); /** 스플래시 시간 조절 (1초) **/
     } catch (e) {
       console.warn(e);

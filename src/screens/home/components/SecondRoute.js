@@ -12,31 +12,38 @@ import {
 } from 'react-native';
 import styles from '../style';
 import {widthPercentage} from '/Responsive';
+import url from '/utils/backend';
+import axios from 'axios';
+import Icon from 'react-native-vector-icons/Entypo';
+import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
+import ConfirmModal from '/components/ConfirmModal';
 
-const SecondRoute = ({navigation}) => {
+const SecondRoute = ({navigation, id}) => {
   const [speakers, setSpeakers] = useState([]);
-  const [peopleNum, setPeopleNum] = useState(4);
+  const [index, setIndex] = useState(-1); //삭제할 인덱스
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
+  const getSpeaker = async () => {
+    try {
+      const res = await axios.get(url + '/speakers/');
+      console.log('all speaker ++==========', res.data);
+      setSpeakers(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const deleteSpeaker = async index => {
+    try {
+      console.log(speakers[index].id);
+      const res = await axios.delete(url + '/speakers/' + speakers[index].id);
+      console.log('deleteSpeaker response: ', res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   useEffect(() => {
-    let tmp = [
-      {
-        name: '김나현',
-        image: '/assets/images/profile3.png',
-      },
-      {
-        name: '김현기',
-        image: '/assets/images/profile2.png',
-      },
-      {
-        name: '김지우',
-        image: '/assets/images/profile1.png',
-      },
-      {
-        name: '남윤재',
-        image: '/assets/images/profile4.png',
-      },
-    ];
-    setSpeakers(tmp);
+    getSpeaker();
   }, []);
 
   return (
@@ -44,51 +51,69 @@ const SecondRoute = ({navigation}) => {
       <ScrollView>
         <View style={styles.spaceTitle}>
           <Text style={styles.title}>화자 목록</Text>
-          <Text style={styles.descript}>총 {peopleNum}명</Text>
+          <Text style={styles.descript}>총 {speakers.length}명</Text>
         </View>
         <View style={styles.contentBox}>
           {speakers.map((s, i) => (
-            <View key={i}>
-              <View style={[styles.spaceB, {alignItems: 'center'}]}>
-                <View style={styles.row}>
-                  <Image
-                    source={require('/assets/images/profile3.png')}
-                    style={[
-                      {
-                        width: widthPercentage(35),
-                        height: widthPercentage(35),
-                        borderRadius: 30,
-                        marginRight: widthPercentage(7),
-                      },
-                    ]}
-                  />
-                  <Text style={styles.title}>{s.name}</Text>
-                </View>
+              <TouchableOpacity
+                key={i}
+                onPress={() => {
+                  return navigation.navigate({
+                    name: 'Modify',
+                    params: {id: s.id},
+                  });
+                }}>
+                <View style={[styles.spaceB, {alignItems: 'center'}]}>
+                  <View style={styles.row}>
+                    <Image
+                      source={require('/assets/images/imgProfileEmpty.png')}
+                      style={[
+                        {
+                          width: widthPercentage(35),
+                          height: widthPercentage(35),
+                          borderRadius: 30,
+                          marginRight: widthPercentage(10),
+                        },
+                      ]}
+                    />
+                    <Text style={styles.title}>{s.name}</Text>
+                  </View>
 
-                <TouchableOpacity
-                  onPress={() => {
-                    return navigation.navigate('ChatRoom');
-                  }}>
-                  <Image
-                    source={require('/assets/images/modify.png')}
-                    style={[styles.icon, {width: widthPercentage(20),
-                      height: widthPercentage(20),}]}
-                  />
-                </TouchableOpacity>
-              </View>
-              {i !== speakers.length - 1 && <View style={styles.line} />}
-            </View>
-          ))}
+                  <TouchableOpacity
+                    onPress={() => {
+                      setIndex(i);
+                      setIsConfirmVisible(true);
+                    }}>
+                    <Ionicons name={'delete'} size={20} color="#9496A1" />
+                  </TouchableOpacity>
+                </View>
+                {i !== speakers.length - 1 && <View style={styles.line} />}
+              </TouchableOpacity>
+            ))}
         </View>
       </ScrollView>
       <TouchableOpacity
         onPress={() => {
-          return navigation.navigate('Register');
+          console.log('id: ', id);
+          return navigation.navigate({name: 'Register', params: {id: id}});
         }}>
         <View style={styles.button}>
           <Text style={styles.btnText}>화자 추가하기</Text>
         </View>
       </TouchableOpacity>
+      <ConfirmModal
+        visible={isConfirmVisible}
+        setVisible={setIsConfirmVisible}
+        onPress={() => {
+          deleteSpeaker(index);
+          getSpeaker();
+          setIndex(-1);
+          setIsConfirmVisible(false);
+        }}
+        isCancel={true}
+        title={'화자를 정말 삭제하시겠습니까?'}
+        content={'삭제된 화자의 음성 정보는 다시 복구할 수 없습니다.'}
+      />
     </View>
   );
 };

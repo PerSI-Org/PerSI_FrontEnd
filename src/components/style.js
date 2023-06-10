@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   calcelButton: {
+    width: '48%',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -91,6 +92,7 @@ const styles = StyleSheet.create({
     color: '#60AAEF',
   },
   button: {
+    width: '48%',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
