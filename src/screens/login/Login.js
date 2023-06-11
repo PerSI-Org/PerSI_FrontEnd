@@ -35,9 +35,10 @@ const Login = () => {
 
   const login = async () => {
     try {
+      console.log('email', email, 'password', password);
       const res = await axios.post(url + '/users/login', {
-        'email': email,
-        'password' : password,
+        email: email,
+        password: password,
       });
       alert('로그인 성공');
       console.log(res.data);
@@ -70,6 +71,7 @@ const Login = () => {
           style={styles.nameInputBox}
           placeholder={'비밀번호를 입력하세요.'}
           placeholderTextColor={'#fff'}
+          secureTextEntry={true}
           onChangeText={text => setPassword(text)}
           underlineColorAndroid="transparent"
         />

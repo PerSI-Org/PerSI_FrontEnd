@@ -19,70 +19,128 @@ import DocumentPicker, {
   isInProgress,
   types,
 } from 'react-native-document-picker';
-import * as RNFS from 'react-native-fs';
 import Icon from 'react-native-vector-icons/AntDesign';
 import url from '/utils/backend';
 import axios from 'axios';
+
+Icon.loadFont().catch(error => {
+  console.info(error);
+});
 
 const Modify = ({route}) => {
   const navigation = useNavigation();
   const [img, setImg] = useState('');
   const [name, setName] = useState('');
-  const [callFiles, setCallFiles] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [recordedVoice, setRecordedVoice] = useState('');
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [result, setResult] = useState([]);
+  const {getSpeaker} = route.params;
+
   const id = route.params.id;
 
-
+  // 기존 정보 가져오기
   const getUserInfo = async () => {
     try {
       const res = await axios.get(url + '/speakers/' + id);
-      console.log(res.data);
+      console.log('Existing Info: ', res.data);
       setName(res.data.name);
       setResult(res.data.call_samples);
+      setImg(res.data.profile_image);
+      setRecordedVoice(res.data.voice_sample);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const updateSpeaker = async () => {
+  // 1-1) 이미지 업로드
+  const uploadImg = () => {
+    let body = new FormData();
+    body.append('file', {
+      uri: Platform.OS === 'android' ? img : img.replace('file://', ''),
+      type: 'image/jpeg',
+      name: 'photo.jpg',
+    });
+    fetch(url + '/uploadfiles/', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body,
+    })
+      .then(response => response.json())
+      .then(res => {
+        console.log('uploadfile url: ', res.url);
+        uploadFile(res.url);
+      })
+      .catch(error => {
+        console.error('Errors:', error);
+      });
+  };
+
+  // 1-1) 통화파일 업로드
+  const uploadFile = image => {
+    console.log('이건 무조건 찍혀야함');
+    let body = new FormData();
+    result.map((r, i) => {
+      console.log('r: ', r.uri);
+      body.append('file', {
+        uri: r.uri,
+        type: 'image/jpeg',
+        name: 'photo.jpg',
+      });
+    })
+    fetch(url + '/uploadfile/', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body,
+    })
+      .then(response => response.json())
+      .then(res => {
+        updateSpeakerCall(image, res.file_url);
+      })
+      .catch(error => {
+        console.error('Errors:', error);
+      });
+  };
+
+  // 1-2) 통화파일로 생성
+  const updateSpeakerCall = async (image, callUrl) => {
     try {
+      console.log('image url: ', image);
       const res = await axios.put(url + '/speakers/', {
-        "name": name,
-        "voice_sample": result,
-        "user_id": "string"
+        name: name,
+        call_sample: callUrl,
+        profile_image: image,
+        user_id: id,
       });
       console.log('speakers', res.data);
+      getSpeaker();
     } catch (e) {
       console.log(e);
     }
   };
 
-  // const uploadImg = () => {
-  //   let body = new FormData();
-  //   body.append('profile_img', {
-  //     uri: Platform.OS === 'android' ? img : img.replace('file://', ''),
-  //     type: 'image/jpeg',
-  //     name: 'photo.jpg',
-  //   });
-  //   fetch(url + '/user/me/profile/image', {
-  //     method: 'POST',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'multipart/form-data',
-  //       Authorization: 'Bearer ' + user.user,
-  //     },
-  //     body,
-  //   })
-  //     .then(response => response.json())
-  //     .then(res => {
-  //       console.log(res);
-  //     })
-  //     .catch(error => {
-  //       console.error('Errors:', error);
-  //     });
-  // };
+  // 2-1) 목소리 녹음으로 생성
+  const updateSpeakerVoice = async image => {
+    try {
+      console.log('image url: ', image);
+      const res = await axios.put(url + '/speakers/', {
+        name: name,
+        voice_sample: recordedVoice,
+        profile_image: image,
+        user_id: id,
+      });
+      console.log('드드드디어 성공~!', res.data);
+      getSpeaker();
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   // 프로필 사진 업로드
   const addImage = () => {
@@ -107,10 +165,19 @@ const Modify = ({route}) => {
     }
   };
 
-
   useEffect(() => {
     getUserInfo();
-  }, [id]);
+  }, []);
+
+  // 녹음된 파일
+  useEffect(() => {
+    console.log('voice files: ', recordedVoice);
+  }, [recordedVoice]);
+
+  // 선택된 통화 파일
+  useEffect(() => {
+    console.log('call files: ', result);
+  }, [result]);
 
   return (
     <View style={styles.container}>
@@ -121,7 +188,7 @@ const Modify = ({route}) => {
             onPress={() => {
               addImage();
             }}>
-            {img != '' ? (
+            {img !== null && img !== '' ? (
               <View>
                 <FastImage
                   style={styles.profileImg}
@@ -205,42 +272,74 @@ const Modify = ({route}) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.itemBox}>
-          {result?.length > 0 && (
-            <Text style={styles.filesTitle}>등록된 파일</Text>
-          )}
-          {result &&
-            result.map((r, i) => (
+        {result && (
+          <View style={styles.itemBox}>
+            {result?.length > 0 && (
+              <Text style={styles.filesTitle}>등록된 통화 파일</Text>
+            )}
+            {result.map((r, i) => (
               <View key={i} style={styles.fileBox}>
                 <Image
                   style={styles.fileImg}
                   source={require('/assets/images/file.png')}
                 />
-                <Text>{r.name}</Text>
-                <Icon name="close" size={20} color="#3D425C" />
+                <Text style={styles.fileName}>{r.name}</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    setResult([]);
+                  }}>
+                  <Icon name="close" size={20} color="#3D425C" />
+                </TouchableOpacity>
               </View>
             ))}
-        </View>
+          </View>
+        )}
+        {recordedVoice && recordedVoice !== '' && (
+          <View style={styles.itemBox}>
+            <Text style={styles.filesTitle}>등록된 녹음 파일</Text>
+            <View style={styles.fileBox}>
+              <Image
+                style={styles.fileImg}
+                source={require('/assets/images/file.png')}
+              />
+              <Text style={styles.fileName}>{recordedVoice}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setRecordedVoice('');
+                }}>
+                <Icon name="close" size={20} color="#3D425C" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
       </ScrollView>
       <TouchableOpacity
         onPress={() => {
           setIsConfirmVisible(true);
-          addSpeaker();
+          if (recordedVoice === '') {
+            uploadImg();
+          } else {
+            updateSpeakerVoice();
+          }
         }}>
         <View style={styles.button}>
           <Text style={styles.btnText}>완 료</Text>
         </View>
       </TouchableOpacity>
-      <RecordModal visible={isModalVisible} setVisible={setIsModalVisible} />
+      <RecordModal
+        visible={isModalVisible}
+        setVisible={setIsModalVisible}
+        setVoice={setRecordedVoice}
+      />
       <ConfirmModal
         visible={isConfirmVisible}
         setVisible={setIsConfirmVisible}
         onPress={() => {
           setIsConfirmVisible(false);
-          navigation.pop()
+          navigation.pop();
         }}
-        title={'화자 등록이 완료되었습니다!'}
-        content={'등록된 화자는 화자 목록에서 확인할 수 있습니다.'}
+        title={'수정이 완료되었습니다!'}
+        content={'수정된 화자 정보는 화자 목록에서 확인할 수 있습니다.'}
       />
     </View>
   );

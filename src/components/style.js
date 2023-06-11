@@ -57,6 +57,16 @@ const styles = StyleSheet.create({
     paddingVertical: heightPercentage(10),
     paddingRight: widthPercentage(15),
   },
+  story: {
+    textAlign: 'center',
+    includeFontPadding: false,
+    color: '#121212',
+    fontSize: fontPercentage(18),
+    fontWeight: 500,
+    marginLeft: widthPercentage(5),
+    paddingVertical: heightPercentage(10),
+    paddingRight: widthPercentage(15),
+  },
   text: {
     textAlign: 'center',
     includeFontPadding: false,
@@ -118,6 +128,38 @@ const styles = StyleSheet.create({
     fontSize: fontPercentage(19),
     fontWeight: '700',
     color: '#fff',
+  },
+  row: {
+    width: '100%',
+    flexDirection: 'row',
+  },
+  seekbar: {
+    width: '100%',
+  },
+  track: {
+    height: 2,
+    borderRadius: 1,
+    backgroundColor: '#FFF',
+  },
+  thumb: {
+    width: 2,
+    height: 2,
+    backgroundColor: '#3D425C',
+  },
+  inprogress: {
+    marginTop: -8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  playBox: {
+    width: '100%',
+    paddingHorizontal: widthPercentage(30), 
+    paddingVertical: heightPercentage(5), 
+    borderRadius: 10,
+    marginVertical: heightPercentage(3),
+    backgroundColor: '#f2f3f9',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
 });
 

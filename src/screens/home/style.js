@@ -140,6 +140,12 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#111',
   },
+  profileImg: {
+    width: widthPercentage(35),
+    height: widthPercentage(35),
+    borderRadius: 30,
+    marginRight: widthPercentage(10),
+  },
 });
 
 export default styles;

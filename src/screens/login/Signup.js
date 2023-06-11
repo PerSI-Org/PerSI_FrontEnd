@@ -57,6 +57,7 @@ const Signup = () => {
         <TextInput
           style={styles.nameInputBox}
           placeholder={'비밀번호'}
+          // secureTextEntry={true}
           placeholderTextColor={'#fff'}
           onChangeText={text => setPassword(text)}
           underlineColorAndroid="transparent"
@@ -64,6 +65,7 @@ const Signup = () => {
         <TextInput
           style={password2 == '' || password == password2 ? styles.nameInputBox: styles.nameInputBox2}
           placeholder={'비밀번호 확인'}
+          // secureTextEntry={true}
           placeholderTextColor={'#fff'}
           onChangeText={text => setPassword2(text)}
           underlineColorAndroid="transparent"
