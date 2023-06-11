@@ -144,6 +144,9 @@ const styles = StyleSheet.create({
     width: widthPercentage(25),
     height: widthPercentage(25),
   },
+  fileName: {
+    width: '80%',
+  },
 });
 
 export default styles;
