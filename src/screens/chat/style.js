@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: widthPercentage(20),
   },
   inprogress: {
-    marginTop: -12,
+    marginTop: -8,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
   },
   playBox: {
     width: '100%',
-    paddingHorizontal: widthPercentage(30), 
+    paddingHorizontal: widthPercentage(30),
     paddingVertical: heightPercentage(5), 
     borderRadius: 10,
     marginVertical: heightPercentage(3),

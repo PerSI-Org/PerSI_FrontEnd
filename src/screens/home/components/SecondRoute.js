@@ -17,6 +17,7 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ConfirmModal from '/components/ConfirmModal';
+import FastImage from 'react-native-fast-image';
 
 const SecondRoute = ({navigation, id}) => {
   const [speakers, setSpeakers] = useState([]);
@@ -26,7 +27,7 @@ const SecondRoute = ({navigation, id}) => {
   const getSpeaker = async () => {
     try {
       const res = await axios.get(url + '/speakers/');
-      console.log('all speaker ++==========', res.data);
+      // console.log('all speaker ++==========', res.data);
       setSpeakers(res.data);
     } catch (e) {
       console.log(e);
@@ -37,14 +38,26 @@ const SecondRoute = ({navigation, id}) => {
     try {
       console.log(speakers[index].id);
       const res = await axios.delete(url + '/speakers/' + speakers[index].id);
-      console.log('deleteSpeaker response: ', res.data);
+      // console.log('deleteSpeaker response: ', res.data);
+      getSpeaker();
     } catch (e) {
       console.log(e);
     }
   };
+
   useEffect(() => {
+    Icon.loadFont().catch(error => {
+      console.info(error);
+    });
+    Ionicons.loadFont().catch(error => {
+      console.info(error);
+    });
     getSpeaker();
   }, []);
+
+  useEffect(() => {
+    getSpeaker();
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -55,47 +68,47 @@ const SecondRoute = ({navigation, id}) => {
         </View>
         <View style={styles.contentBox}>
           {speakers.map((s, i) => (
-              <TouchableOpacity
-                key={i}
-                onPress={() => {
-                  return navigation.navigate({
-                    name: 'Modify',
-                    params: {id: s.id},
-                  });
-                }}>
-                <View style={[styles.spaceB, {alignItems: 'center'}]}>
-                  <View style={styles.row}>
-                    <Image
-                      source={require('/assets/images/imgProfileEmpty.png')}
-                      style={[
-                        {
-                          width: widthPercentage(35),
-                          height: widthPercentage(35),
-                          borderRadius: 30,
-                          marginRight: widthPercentage(10),
-                        },
-                      ]}
-                    />
-                    <Text style={styles.title}>{s.name}</Text>
-                  </View>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      setIndex(i);
-                      setIsConfirmVisible(true);
-                    }}>
-                    <Ionicons name={'delete'} size={20} color="#9496A1" />
-                  </TouchableOpacity>
+            <TouchableOpacity
+              key={i}
+              onPress={() => {
+                return navigation.navigate({
+                  name: 'Modify',
+                  params: {id: s.id, getSpeaker: getSpeaker},
+                });
+              }}>
+              <View style={[styles.spaceB, {alignItems: 'center'}]}>
+                <View style={styles.row}>
+                  <Image
+                    source={
+                      s.profile_image
+                        ? {uri: s.profile_image}
+                        : require('/assets/images/imgProfileEmpty.png')
+                    }
+                    style={styles.profileImg}
+                  />
+                  <Text style={styles.title}>{s.name}</Text>
                 </View>
-                {i !== speakers.length - 1 && <View style={styles.line} />}
-              </TouchableOpacity>
-            ))}
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setIndex(i);
+                    setIsConfirmVisible(true);
+                  }}>
+                  <Ionicons name={'delete'} size={20} color="#9496A1" />
+                </TouchableOpacity>
+              </View>
+              {i !== speakers.length - 1 && <View style={styles.line} />}
+            </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
       <TouchableOpacity
         onPress={() => {
           console.log('id: ', id);
-          return navigation.navigate({name: 'Register', params: {id: id}});
+          return navigation.navigate({
+            name: 'Register',
+            params: {id: id, getSpeaker: getSpeaker},
+          });
         }}>
         <View style={styles.button}>
           <Text style={styles.btnText}>화자 추가하기</Text>

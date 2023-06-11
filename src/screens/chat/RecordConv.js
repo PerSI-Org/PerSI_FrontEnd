@@ -17,9 +17,8 @@ import {widthPercentage} from '/Responsive';
 import Modal from 'react-native-modal';
 import url from '/utils/backend';
 import axios from 'axios';
+import WaitModal from '/components/WaitModal';
 
-Icon.loadFont();
-Ionicons.loadFont();
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 function RecordConv({route}) {
@@ -29,6 +28,7 @@ function RecordConv({route}) {
   const [desc, setDesc] = useState('');
   const [percent, setPercent] = useState(0);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  const [isWaitVisible, setIsWaitVisible] = useState(false);
   const [isFirst, setIsFirst] = useState(true);
   const [isAlreadyRecording, setisAlreadyRecording] = useState(false);
   const [isAlreadyPlay, setisAlreadyPlay] = useState(false);
@@ -36,24 +36,78 @@ function RecordConv({route}) {
   const [recordTime, setRecordTime] = useState('00:00:00');
   const [currentPositionSec, setCurrentPositionSec] = useState(0);
   const [currentDurationSec, setCurrentDurationSec] = useState(0);
-  const [playTime, setPlayTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const [filePath, setFilePath] = useState('');
+  const {getMeetings} = route.params;
+
   const id = route.params.id;
 
   const createMeeting = async () => {
     try {
-      console.log(id);
+      setIsConfirmVisible(false);
       const res = await axios.post(url + '/meetings/', {
         name: title,
         description: desc,
         owner_id: id,
       });
-      console.log(res.data);
+      uploadFile(res.data.id);
     } catch (e) {
       console.log(e);
     }
   };
 
+  const uploadFile = meetingId => {
+    let body = new FormData();
+    body.append('file', {
+      uri: filePath,
+      type: 'audio/*',
+      name: 'audio.m4a',
+    });
+    fetch(url + '/uploadfile/', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body,
+    })
+      .then(response => response.json())
+      .then(res => {
+        addAudio(meetingId, res.file_url);
+      })
+      .catch(error => {
+        console.error('Errors:', error);
+      });
+  };
+
+  const addAudio = async (meetingId, fileUrl) => {
+    try {
+      // console.log('!!===========fileUrl : ', fileUrl);
+      // console.log('!!===========id : ', meetingId);
+      const res = await axios.post(
+        url + '/meetings/meeting/' + meetingId + '/audio',
+        {
+          audio_file_url: fileUrl,
+        },
+      );
+      console.log('/meetings/meeting/: ', res.data);
+      createConv(meetingId);
+    } catch (e) {
+      alert('등록 실패');
+      console.log(e);
+    }
+  };
+
+  const createConv = async meetingId => {
+    try {
+      const res = await axios.post(url + '/meetings/conversation/' + meetingId);
+      console.log('드디어 성공!!', res.data);
+      setIsWaitVisible(false);
+      getMeetings();
+      navigation.pop();
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const checkRecord = async () => {
     try {
@@ -101,6 +155,7 @@ function RecordConv({route}) {
     audioRecorderPlayer.removeRecordBackListener();
     setIsConfirmVisible(true);
     console.log(result);
+    setFilePath(result);
   };
 
   const onStartPlay = async () => {
@@ -116,15 +171,19 @@ function RecordConv({route}) {
       }
       let percent = 0;
       if (e.currentPosition !== undefined) {
-        percent = Math.round(
-          Math.floor(e.currentPosition) /Math.floor(e.duration) * 100,
-        );
+        try {
+          percent = Math.round(
+            (Math.floor(e.currentPosition) / Math.floor(e.duration)) * 100,
+          );
+        } catch (error) {
+          console.error(error);
+        }
       }
       setPercent(percent);
       setCurrentPositionSec(e.currentPosition);
       setCurrentDurationSec(e.duration);
-      setPlayTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
-      setDuration(audioRecorderPlayer.mmssss(Math.floor(e.duration)));
+      // setPlayTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
+      // setDuration(audioRecorderPlayer.mmssss(Math.floor(e.duration)));
       return;
     });
   };
@@ -167,159 +226,175 @@ function RecordConv({route}) {
   }, [navigation]);
 
   useEffect(() => {
+    Icon.loadFont().catch(error => {
+      console.info(error);
+    });
+    Ionicons.loadFont().catch(error => {
+      console.info(error);
+    });
     checkRecord();
   }, []);
 
+  useEffect(() => {
+    console.log('isWaitVisible', isWaitVisible);
+  }, [isWaitVisible]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.views}>
-        <View style={styles.center}>
-          <Text style={styles.descText}>
-            {isAlreadyRecording ? '녹음 중입니다' : '녹음 중이 아닙니다'}
-          </Text>
-        </View>
-        <View style={styles.center}>
-          <Text style={styles.timeText}>{recordTime.slice(0, -3)}</Text>
-        </View>
-
-        <View style={styles.imageContainer}>
-          <Image
-            source={require('/assets/images/recording.png')}
-            style={
-              isAlreadyRecording
-                ? {
-                    width: widthPercentage(260),
-                    height: widthPercentage(260),
-                    opacity: 0.9,
-                  }
-                : {
-                    width: widthPercentage(260),
-                    height: widthPercentage(260),
-                    opacity: 0.5,
-                  }
-            }
-          />
-        </View>
-      </View>
-      <View style={styles.buttonContainer}>
-        {!isFirst && <View style={{width: widthPercentage(32)}} />}
-        {!isAlreadyRecording ? (
-          <TouchableOpacity
-            style={styles.playButtonContainer}
-            onPress={() => {
-              if (isFirst) {
-                onStartRecord();
-              } else {
-                console.log('resume!!!!');
-                onResumeRecord();
-              }
-            }}>
-            <Icon name={'controller-record'} size={50} color="#E95C56" />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={styles.playButtonContainer}
-            onPress={() => onPauseRecord()}>
-            <Ionicons name={'pause'} size={50} color="#3D425C" />
-          </TouchableOpacity>
-        )}
-        {!isFirst && (
-          <TouchableOpacity onPress={() => onStopRecord()}>
-            <Icon name="controller-stop" size={32} color="#3D425C" />
-          </TouchableOpacity>
-        )}
-      </View>
-      <Modal isVisible={isConfirmVisible}>
-        <View style={{alignItems: 'center', justifyContent: 'center'}}>
-          <View style={styles.modalContainer}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>{'대화 녹음이 완료되었습니다!'}</Text>
+      {!isWaitVisible && (
+        <>
+          <View style={styles.views}>
+            <View style={styles.center}>
+              <Text style={styles.descText}>
+                {isAlreadyRecording ? '녹음 중입니다' : '녹음 중이 아닙니다'}
+              </Text>
             </View>
-            <View style={styles.playBox}>
-              <View style={styles.row}>
-                <View style={styles.seekbar}>
-                  <Slider
-                    minimumValue={0}
-                    maximumValue={100}
-                    trackStyle={styles.track}
-                    thumbStyle={styles.thumb}
-                    value={percent}
-                    minimumTrackTintColor="#93A8B3"
-                    onValueChange={seconds => changeTime(seconds)}
-                  />
-                  <View style={styles.inprogress}>
-                    <Text style={[styles.textLight, styles.timeStamp]}>
-                      {!inprogress
-                        ? currentPositionSec
-                        : audioRecorderPlayer.mmssss(
-                            Math.floor(currentPositionSec),
-                          )}
-                    </Text>
-                    {!isAlreadyPlay ? (
-                      <TouchableOpacity onPress={() => onStartPlay()}>
-                        <Icon
-                          name="controller-play"
-                          size={32}
-                          color="#3D425C"
-                        />
-                      </TouchableOpacity>
-                    ) : (
-                      <TouchableOpacity onPress={() => onPausePlay()}>
-                        <Ionicons name="pause" size={32} color="#3D425C" />
-                      </TouchableOpacity>
-                    )}
-                    <Text style={[styles.textLight, styles.timeStamp]}>
-                      {!inprogress
-                        ? duration
-                        : audioRecorderPlayer.mmssss(
-                            Math.floor(currentDurationSec),
-                          )}
-                    </Text>
+            <View style={styles.center}>
+              <Text style={styles.timeText}>{recordTime.slice(0, -3)}</Text>
+            </View>
+
+            <View style={styles.imageContainer}>
+              <Image
+                source={require('/assets/images/recording.png')}
+                style={
+                  isAlreadyRecording
+                    ? {
+                        width: widthPercentage(260),
+                        height: widthPercentage(260),
+                        opacity: 0.9,
+                      }
+                    : {
+                        width: widthPercentage(260),
+                        height: widthPercentage(260),
+                        opacity: 0.5,
+                      }
+                }
+              />
+            </View>
+          </View>
+          <View style={styles.buttonContainer}>
+            {!isFirst && <View style={{width: widthPercentage(32)}} />}
+            {!isAlreadyRecording ? (
+              <TouchableOpacity
+                style={styles.playButtonContainer}
+                onPress={() => {
+                  if (isFirst) {
+                    onStartRecord();
+                  } else {
+                    console.log('resume!!!!');
+                    onResumeRecord();
+                  }
+                }}>
+                <Icon name={'controller-record'} size={50} color="#E95C56" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.playButtonContainer}
+                onPress={() => onPauseRecord()}>
+                <Ionicons name={'pause'} size={50} color="#3D425C" />
+              </TouchableOpacity>
+            )}
+            {!isFirst && (
+              <TouchableOpacity onPress={() => onStopRecord()}>
+                <Icon name="controller-stop" size={32} color="#3D425C" />
+              </TouchableOpacity>
+            )}
+          </View>
+          <Modal isVisible={isConfirmVisible}>
+            <View style={{alignItems: 'center', justifyContent: 'center'}}>
+              <View style={styles.modalContainer}>
+                <View style={styles.titleContainer}>
+                  <Text style={styles.title}>
+                    {'대화 녹음이 완료되었습니다!'}
+                  </Text>
+                </View>
+                <View style={styles.playBox}>
+                  <View style={styles.row}>
+                    <View style={styles.seekbar}>
+                      <Slider
+                        minimumValue={0}
+                        maximumValue={100}
+                        trackStyle={styles.track}
+                        thumbStyle={styles.thumb}
+                        value={percent}
+                        minimumTrackTintColor="#93A8B3"
+                        onValueChange={seconds => changeTime(seconds)}
+                      />
+                      <View style={styles.inprogress}>
+                        <Text style={[styles.textLight, styles.timeStamp]}>
+                          {!inprogress
+                            ? currentPositionSec
+                            : audioRecorderPlayer.mmssss(
+                                Math.floor(currentPositionSec),
+                              )}
+                        </Text>
+                        {!isAlreadyPlay ? (
+                          <TouchableOpacity onPress={() => onStartPlay()}>
+                            <Icon
+                              name="controller-play"
+                              size={32}
+                              color="#3D425C"
+                            />
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity onPress={() => onPausePlay()}>
+                            <Ionicons name="pause" size={32} color="#3D425C" />
+                          </TouchableOpacity>
+                        )}
+                        <Text style={[styles.textLight, styles.timeStamp]}>
+                          {!inprogress
+                            ? currentDurationSec
+                            : audioRecorderPlayer.mmssss(
+                                Math.floor(currentDurationSec),
+                              )}
+                        </Text>
+                      </View>
+                    </View>
                   </View>
+                </View>
+                <View style={styles.itemBox}>
+                  {/* <Text style={styles.title}>대화 제목</Text> */}
+                  <TextInput
+                    style={styles.nameInputBox}
+                    placeholder={'대화 이름을 입력하세요.'}
+                    placeholderTextColor={'#999'}
+                    onChangeText={text => setTitle(text)}
+                    underlineColorAndroid="transparent"
+                  />
+                  <TextInput
+                    style={styles.nameInputBox}
+                    placeholder={'대화 설명을 입력하세요.'}
+                    placeholderTextColor={'#999'}
+                    onChangeText={text => setDesc(text)}
+                    underlineColorAndroid="transparent"
+                  />
+                </View>
+                <View style={styles.titleContainer}>
+                  <Text style={styles.text}>
+                    {'등록된 화자는 화자 목록에서 확인할 수 있습니다.'}
+                  </Text>
+                </View>
+                <View style={styles.spaceB}>
+                  <TouchableOpacity
+                    style={styles.calcelButton}
+                    onPress={() => setIsConfirmVisible(false)}>
+                    <Text style={styles.calcelBtnText}>취소</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => {
+                      createMeeting();
+                      setIsWaitVisible(true);
+                    }}>
+                    <Text style={styles.btnText}>확인</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
-            <View style={styles.itemBox}>
-              {/* <Text style={styles.title}>대화 제목</Text> */}
-              <TextInput
-                style={styles.nameInputBox}
-                placeholder={'대화 이름을 입력하세요.'}
-                placeholderTextColor={'#999'}
-                onChangeText={text => setTitle(text)}
-                underlineColorAndroid="transparent"
-              />
-              <TextInput
-                style={styles.nameInputBox}
-                placeholder={'대화 설명을 입력하세요.'}
-                placeholderTextColor={'#999'}
-                onChangeText={text => setDesc(text)}
-                underlineColorAndroid="transparent"
-              />
-            </View>
-            <View style={styles.titleContainer}>
-              <Text style={styles.text}>
-                {'등록된 화자는 화자 목록에서 확인할 수 있습니다.'}
-              </Text>
-            </View>
-            <View style={styles.spaceB}>
-              <TouchableOpacity
-                style={styles.calcelButton}
-                onPress={() => setIsConfirmVisible(false)}>
-                <Text style={styles.calcelBtnText}>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                  createMeeting();
-                  setIsConfirmVisible(false);
-                  navigation.pop();
-                }}>
-                <Text style={styles.btnText}>확인</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+          </Modal>
+        </>
+      )}
+      <WaitModal visible={isWaitVisible} setVisible={setIsWaitVisible} />
     </View>
   );
 }
