@@ -105,6 +105,7 @@ function RecordConv({route}) {
       getMeetings();
       navigation.pop();
     } catch (e) {
+      setIsWaitVisible(false);
       console.log(e);
     }
   };

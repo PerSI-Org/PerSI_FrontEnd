@@ -19,18 +19,13 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
   const navigation = useNavigation();
   const [inprogress, setInprogress] = useState(false);
   const [percent, setPercent] = useState(0);
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
-  const [isFirst, setIsFirst] = useState(true);
   const [isAlreadyRecording, setisAlreadyRecording] = useState(false);
   const [isAlreadyPlay, setisAlreadyPlay] = useState(false);
-  const [recordSecs, setRecordSecs] = useState(0);
-  const [recordTime, setRecordTime] = useState('00:00:00');
+  const [recordTime, setRecordTime] = useState('00:00');
   const [currentPositionSec, setCurrentPositionSec] = useState(0);
   const [currentDurationSec, setCurrentDurationSec] = useState(0);
   const [filePath, setFilePath] = useState('');
   const [page, setPage] = useState(0);
-
-  const [isStarted, setIsStarted] = useState(false);
 
   const story = [
     '내 나이 여섯 살 적에, 한번은 체험담 이라고 부르는 처녀림에 관한 책에서 멋있는 그림 하나를 보았다. 보아뱀 한 마리가 맹수를 삼키고 있는 그림이었다. 그걸 옮겨 놓은 그림이 위에 있다. \
@@ -60,7 +55,7 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
     '사람이 사는 곳에서 사방으로 수천 마일 떨어진 사막 한가운데서 길을 잃은 어린아이의 모습이 전혀 아니었다. 나는 마침내 입을 열 수 있게 되자, 겨우 이렇게 말했다. "그런데...... 넌 거기서 뭘 하고 있느냐?" 그러나 그 애는 무슨 중대한 일이나 되는 것처럼 아주 천천히 같은 말을 되풀이했다. "저...... 양 한 마리만 그려 줘요......" ',
   ];
 
-  const uploadFile  = async () => {
+  const uploadFile = async () => {
     let body = new FormData();
     body.append('file', {
       uri: filePath,
@@ -99,11 +94,9 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
   };
 
   const onStartRecord = async () => {
-    setIsFirst(false);
     setisAlreadyRecording(true);
     const result = await audioRecorderPlayer.startRecorder();
     audioRecorderPlayer.addRecordBackListener(e => {
-      setRecordSecs(e.currentPosition);
       setRecordTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
       return;
     });
@@ -121,18 +114,18 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
       if (e.current_position === e.duration) {
         audioRecorderPlayer.stopPlayer();
       }
-      let percent = 0;
+      let p;
       if (e.currentPosition !== undefined) {
         try {
-          percent = Math.round(
+          p = Math.round(
             (Math.floor(e.currentPosition) / Math.floor(e.duration)) * 100,
           );
         } catch (error) {
           console.error(error);
         }
       }
-      if (typeof percent === 'number'){
-        setPercent(percent);
+      if (typeof p === 'number') {
+        setPercent(p);
       }
       setCurrentPositionSec(e.currentPosition);
       setCurrentDurationSec(e.duration);
@@ -150,10 +143,8 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
 
   const onStopRecord = async () => {
     setisAlreadyRecording(false);
-    setRecordSecs('00:00:00');
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
-    setIsConfirmVisible(true);
     console.log(result);
     setFilePath(result);
   };
@@ -165,10 +156,10 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
   }, []);
 
   return (
-    <Modal onBackdropPress={() => setVisible(false)} isVisible={visible}>
+    <Modal isVisible={visible}>
       <View style={{alignItems: 'center', justifyContent: 'center'}}>
         <View style={styles.container}>
-          {!isStarted ? (
+          {page === 0 ? (
             <>
               <View style={styles.titleContainer}>
                 <Text style={styles.title}>
@@ -195,14 +186,17 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
               <View style={styles.spaceB}>
                 <TouchableOpacity
                   style={styles.calcelButton}
-                  onPress={() => setVisible(false)}>
+                  onPress={() => {
+                    onStopRecord();
+                    setVisible(false);
+                  }}>
                   <Text style={styles.calcelBtnText}>녹음 취소</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
                     onStartRecord();
-                    setIsStarted(true);
+                    setPage(1);
                   }}>
                   <Text style={styles.btnText}>녹음 시작</Text>
                 </TouchableOpacity>
@@ -210,17 +204,20 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
             </>
           ) : (
             <>
-              {page < 12 ?
+              {page < 12 ? (
                 <>
                   <View style={styles.titleContainer}>
                     <Text style={styles.title}>다음과 같이 말해보세요!</Text>
-                    <Text style={styles.text}>{page + 1} / 12</Text>
+                    <Text style={styles.text}>녹음 시간</Text>
+                    <Text style={styles.text}>{recordTime.slice(0, -3)}</Text>
                   </View>
                   <View style={styles.scriptContainer}>
                     <Text style={styles.story}>{story[page]}</Text>
                   </View>
+                  <Text style={styles.text}>{page} / 12</Text>
                 </>
-              : <>
+              ) : (
+                <>
                   <View style={styles.titleContainer}>
                     <Text style={styles.title}>녹음이 완료되었습니다!</Text>
                     <Text style={styles.text}>녹음된 음성을 들어보세요</Text>
@@ -274,8 +271,7 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
                     </View>
                   </View>
                 </>
-              }
-
+              )}
               <View style={styles.spaceB}>
                 <TouchableOpacity
                   style={styles.calcelButton}
@@ -284,14 +280,12 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
                       onStopRecord();
                       onStartRecord();
                       setPage(0);
-                    } else if (page === 0) {
-                      setVisible(false);
                     } else {
                       setPage(page - 1);
                     }
                   }}>
                   <Text style={styles.calcelBtnText}>
-                    {page == 1 ? '녹음 취소' : page === 12 ? '다시 녹음' :'이전'}
+                    {page === 12 ? '다시 녹음' : '이전'}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -299,7 +293,7 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
                   onPress={() => {
                     if (page > 11) {
                       uploadFile();
-                    } else if (page == 11) {
+                    } else if (page === 11) {
                       onStopRecord();
                       setPage(page + 1);
                     } else {

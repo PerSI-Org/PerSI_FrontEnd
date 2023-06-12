@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     marginLeft: widthPercentage(5),
     paddingVertical: heightPercentage(10),
     paddingRight: widthPercentage(15),
+    lineHeight: 20,
   },
   text: {
     textAlign: 'center',
