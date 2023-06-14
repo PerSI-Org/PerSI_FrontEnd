@@ -2,7 +2,6 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
-  Math,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
@@ -19,97 +18,124 @@ import {
 import Slider from '@react-native-community/slider';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import Icon from 'react-native-vector-icons/AntDesign';
-import PlayButton from './PlayButton';
+import url from '/utils/backend';
+import axios from 'axios';
+import FastImage from 'react-native-fast-image';
 import styles from './style';
+import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {widthPercentage, heightPercentage} from '/Responsive';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 
-Icon.loadFont();
 
-const playlist = [
-  {
-    title: 'Emergence of Talents',
-    path: 'track1.mp3',
-    cover:
-      'https://images.unsplash.com/photo-1515552726023-7125c8d07fb3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80',
-  },
-  {
-    title: 'Shippuden',
-    path: 'track2.mp3',
-    cover:
-      'https://images.unsplash.com/photo-1542359649-31e03cd4d909?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80',
-  },
-  {
-    title: 'Rising Dragon',
-    path: 'track3.mp3',
-    cover:
-      'https://images.unsplash.com/photo-1512036666432-2181c1f26420?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80',
-  },
-  {
-    title: 'Risking it all',
-    path: 'track4.mp3',
-    cover:
-      'https://images.unsplash.com/photo-1501761095094-94d36f57edbb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=401&q=80',
-  },
-  {
-    title: 'Gekiha',
-    path: 'track5.mp3',
-    cover:
-      'https://images.unsplash.com/photo-1471400974796-1c823d00a96f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80',
-  },
-];
+const audioRecorderPlayer = new AudioRecorderPlayer();
+
+Icon?.loadFont().catch(error => {
+  console.info(error);
+});
+Ionicons?.loadFont().catch(error => {
+  console.info(error);
+});
 
 function ChatRoom({route}) {
   const navigation = useNavigation();
-  const [chats, setChats] = useState([
-    {
-      name: '김나현',
-      time: '00:03',
-      contents: '안녕하세요!\n저는 김나현 입니다.',
-    },
-    {name: '김지우', time: '00:05', contents: '안녕하세요'},
-    {name: '김나현', time: '00:09', contents: '안녕하세요!'},
-    {name: '김나현', time: '00:12', contents: '안녕하세요!'},
-  ]);
+  const [chats, setChats] = useState([]);
   const [isAlreadyPlay, setisAlreadyPlay] = useState(false);
-  const [duration, setDuration] = useState('00:00:00');
-  const [timeElapsed, setTimeElapsed] = useState('00:00:00');
+  const [currentPositionSec, setCurrentPositionSec] = useState(0);
+  const [currentDurationSec, setCurrentDurationSec] = useState(0);
   const [percent, setPercent] = useState(0);
   const [current_track, setCurrentTrack] = useState(0);
   const [inprogress, setInprogress] = useState(false);
-  const audioRecorderPlayer = useState(new AudioRecorderPlayer());
+  const [names, setNames] = useState({});
+  const [images, setImages] = useState({});
+  const [convFile, setConvFile] = useState({});
+  const data = route.params.data;
+
+  const id = route.params.data.id;
+
+  // 대화 정보 가져오기
+  const getMeeting = async () => {
+    try {
+      console.log('id:', id);
+      const res = await axios.get(url + '/meetings/' + id);
+      console.log('Existing Info: ', res.data);
+      setConvFile(res.data.conversation_file);
+      setChats(res.data.conversations);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const changeTime = async seconds => {
     // 50 / duration
-    let seektime = (seconds / 100) * duration;
-    setTimeElapsed(seektime);
-    audioRecorderPlayer.seekToPlayer(seektime);
+    if (seconds !== undefined) {
+      let seektime = parseInt((seconds / 100) * currentDurationSec, 10);
+      setCurrentPositionSec(seektime);
+      audioRecorderPlayer.seekToPlayer(seektime);
+    }
   };
 
-  const onStartPress = async e => {
+  const onStartPlay = async () => {
     setisAlreadyPlay(true);
     setInprogress(true);
-    const path = 'file://' + dirs + '/' + playlist[current_track].path;
-    audioRecorderPlayer.startPlayer(path);
+    console.log('onStartPlay', convFile);
+    const msg = await audioRecorderPlayer.startPlayer(convFile, null);
     audioRecorderPlayer.setVolume(1.0);
-
-    audioRecorderPlayer.addPlayBackListener(async e => {
+    console.log(msg); 
+    audioRecorderPlayer.addPlayBackListener(e => {
       if (e.current_position === e.duration) {
         audioRecorderPlayer.stopPlayer();
       }
-      let percent = Math.round(
-        (Math.floor(e.current_position) / Math.floor(e.duration)) * 100,
-      );
-      setTimeElapsed(e.current_position);
-      setPercent(percent);
-      setDuration(e.duration);
+      let p;
+      if (e.currentPosition !== undefined) {
+        try {
+          p = Math.round(
+            (Math.floor(e.currentPosition) / Math.floor(e.duration)) * 100,
+          );
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      if (typeof p === 'number') {
+        setPercent(p);
+      }
+      setCurrentPositionSec(e.currentPosition);
+      setCurrentDurationSec(e.duration);
+      // setPlayTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
+      // setDuration(audioRecorderPlayer.mmssss(Math.floor(e.duration)));
+      return;
     });
   };
 
-  const onPausePress = async e => {
+  const onPausePlay = async () => {
+    console.log('onPausePlay');
     setisAlreadyPlay(false);
-    audioRecorderPlayer.pausePlayer();
+    await audioRecorderPlayer.pausePlayer();
   };
+
+  // const onStartPress = async e => {
+  //   setisAlreadyPlay(true);
+  //   setInprogress(true);
+  //   const path = convFile;
+  //   audioRecorderPlayer.startPlayer(path);
+  //   audioRecorderPlayer.setVolume(1.0);
+
+  //   audioRecorderPlayer.addPlayBackListener(async e => {
+  //     if (e.current_position === e.duration) {
+  //       audioRecorderPlayer.stopPlayer();
+  //     }
+  //     let percent = Math.round(
+  //       (Math.floor(e.current_position) / Math.floor(e.duration)) * 100,
+  //     );
+  //     setTimeElapsed(e.current_position);
+  //     setPercent(percent);
+  //     setDuration(e.duration);
+  //   });
+  // };
+
+  // const onPausePress = async e => {
+  //   setisAlreadyPlay(false);
+  //   audioRecorderPlayer.pausePlayer();
+  // };
 
   const onStopPress = async e => {
     await audioRecorderPlayer.stopPlayer();
@@ -155,6 +181,32 @@ function ChatRoom({route}) {
     }
   };
 
+  function convertSecondsToMMSS(seconds) {
+    let minutes = parseInt(seconds / 60, 10);
+    let remainingSeconds = seconds % 60;
+
+    let formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+    let formattedSeconds =
+      remainingSeconds < 10 ? '0' + remainingSeconds : remainingSeconds;
+
+    return formattedMinutes + ':' + formattedSeconds;
+  }
+
+  useEffect(() => {
+    getMeeting();
+    checkRecord();
+    let obj = {};
+    for (let i = 0; i < data.speakers_id.length; i++) {
+      obj[data.speakers_id[i]] = data.speakers_name[i];
+    }
+    setNames(obj);
+    obj = {};
+    for (let i = 0; i < data.id.length; i++) {
+      obj[data.speakers_id[i]] = data.speakers_image[i];
+    }
+    setImages(obj);
+  }, []);
+
   useEffect(() => {
     console.log(route.params.header);
     navigation.setOptions({
@@ -169,30 +221,34 @@ function ChatRoom({route}) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.chatContainer}>
-        {chats.map((c, i) => (
-          <View key={i} style={styles.chatBox}>
-            <Image
-              source={require('/assets/images/profile3.png')}
-              style={[
-                {
-                  width: widthPercentage(35),
-                  height: widthPercentage(35),
-                  borderRadius: 30,
-                  marginRight: widthPercentage(7),
-                },
-              ]}
-            />
-            <View>
-              <View style={styles.row}>
-                <Text style={styles.nameText}>{c.name}</Text>
-                <Text style={styles.timeStamp}>{c.time}</Text>
-              </View>
-              <View style={styles.speech}>
-                <Text style={styles.contents}>{c.contents}</Text>
+        {chats !== undefined &&
+          chats?.map((c, i) => (
+            <View key={i} style={styles.chatBox}>
+              <FastImage
+                source={
+                  images[c.speaker]
+                    ? {
+                        uri: images[c.speaker],
+                        priority: FastImage.priority.normal,
+                      }
+                    : require('/assets/images/imgProfileEmpty.png')
+                }
+                resizeMode={FastImage.resizeMode.cover}
+                style={styles.profileImg}
+              />
+              <View>
+                <View style={styles.row}>
+                  <Text style={styles.nameText}>{names[c.speaker]}</Text>
+                  <Text style={styles.timeStamp}>
+                    {convertSecondsToMMSS(parseInt(c.start_time, 10))}
+                  </Text>
+                </View>
+                <View style={styles.speech}>
+                  <Text style={styles.contents}>{c.script.toLowerCase()}</Text>
+                </View>
               </View>
             </View>
-          </View>
-        ))}
+          ))}
       </ScrollView>
       <View style={styles.seekbar}>
         <Slider
@@ -205,35 +261,32 @@ function ChatRoom({route}) {
           onValueChange={seconds => changeTime(seconds)}
         />
         <View style={styles.inprogress}>
-          <Text style={[styles.textLight, styles.timeStamp]}>
+          <Text style={styles.timeStamp}>
             {!inprogress
-              ? timeElapsed
-              : audioRecorderPlayer.mmssss(Math.floor(timeElapsed))}
+              ? '00:00:00'
+              : audioRecorderPlayer.mmssss(Math.floor(currentPositionSec))}
           </Text>
-          <Text style={[styles.textLight, styles.timeStamp]}>
+          <TouchableOpacity onPress={() => onBackward()}>
+            <Icon name="stepbackward" size={32} color="#93A8B3" />
+          </TouchableOpacity>
+          {!isAlreadyPlay ? (
+            <TouchableOpacity onPress={() => onStartPlay()}>
+              <Icon name={'caretright'} size={32} color="#3D425C" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={() => onPausePlay()}>
+              <Icon name={'pause'} size={32} color="#3D425C" />
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity onPress={() => onForward()}>
+            <Icon name="stepforward" size={32} color="#93A8B3" />
+          </TouchableOpacity>
+          <Text style={styles.timeStamp}>
             {!inprogress
-              ? duration
-              : audioRecorderPlayer.mmssss(Math.floor(duration))}
+              ? '00:00:00'
+              : audioRecorderPlayer.mmssss(Math.floor(currentDurationSec))}
           </Text>
         </View>
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => onBackward()}>
-          <Icon name="stepbackward" size={32} color="#93A8B3" />
-        </TouchableOpacity>
-        {!isAlreadyPlay ? (
-          <TouchableOpacity onPress={() => onStartPress()}>
-            <Icon name={'caretright'} size={32} color="#3D425C" />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity onPress={() => onPausePress()}>
-            <Icon name={'pause'} size={32} color="#3D425C" />
-          </TouchableOpacity>
-        )}
-        <TouchableOpacity onPress={() => onForward()}>
-          <Icon name="stepforward" size={32} color="#93A8B3" />
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
   profileImg4: {
     width: widthPercentage(28),
     height: widthPercentage(28),
+    backgroundColor: '#fff',
     borderRadius: 10,
     borderColor: '#fff',
     borderWidth: 1,
@@ -98,13 +99,15 @@ const styles = StyleSheet.create({
   profileImg2: {
     width: widthPercentage(36),
     height: widthPercentage(36),
+    backgroundColor: '#fff',
     borderRadius: 12,
-    borderColor: '#fff',
+    borderColor: '#f4f5f9',
     borderWidth: 2,
   },
   profileImg1: {
     width: widthPercentage(56),
     height: widthPercentage(56),
+    backgroundColor: '#fff',
     borderRadius: 16,
   },
   icon: {

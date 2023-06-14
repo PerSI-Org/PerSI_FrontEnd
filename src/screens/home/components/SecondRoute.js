@@ -46,10 +46,10 @@ const SecondRoute = ({navigation, id}) => {
   };
 
   useEffect(() => {
-    Icon.loadFont().catch(error => {
+    Icon?.loadFont().catch(error => {
       console.info(error);
     });
-    Ionicons.loadFont().catch(error => {
+    Ionicons?.loadFont().catch(error => {
       console.info(error);
     });
     getSpeaker();
