@@ -105,6 +105,7 @@ function RecordConv({route}) {
       getMeetings();
       navigation.pop();
     } catch (e) {
+      setIsWaitVisible(false);
       console.log(e);
     }
   };
@@ -226,10 +227,10 @@ function RecordConv({route}) {
   }, [navigation]);
 
   useEffect(() => {
-    Icon.loadFont().catch(error => {
+    Icon?.loadFont().catch(error => {
       console.info(error);
     });
-    Ionicons.loadFont().catch(error => {
+    Ionicons?.loadFont().catch(error => {
       console.info(error);
     });
     checkRecord();
@@ -310,7 +311,7 @@ function RecordConv({route}) {
                 </View>
                 <View style={styles.playBox}>
                   <View style={styles.row}>
-                    <View style={styles.seekbar}>
+                    <View style={{width: '100%'}}>
                       <Slider
                         minimumValue={0}
                         maximumValue={100}
@@ -321,9 +322,9 @@ function RecordConv({route}) {
                         onValueChange={seconds => changeTime(seconds)}
                       />
                       <View style={styles.inprogress}>
-                        <Text style={[styles.textLight, styles.timeStamp]}>
+                        <Text style={styles.timeStamp}>
                           {!inprogress
-                            ? currentPositionSec
+                            ? '00:00:00'
                             : audioRecorderPlayer.mmssss(
                                 Math.floor(currentPositionSec),
                               )}
@@ -341,9 +342,9 @@ function RecordConv({route}) {
                             <Ionicons name="pause" size={32} color="#3D425C" />
                           </TouchableOpacity>
                         )}
-                        <Text style={[styles.textLight, styles.timeStamp]}>
+                        <Text style={styles.timeStamp}>
                           {!inprogress
-                            ? currentDurationSec
+                            ? '00:00:00'
                             : audioRecorderPlayer.mmssss(
                                 Math.floor(currentDurationSec),
                               )}

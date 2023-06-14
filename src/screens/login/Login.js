@@ -20,19 +20,6 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const getUsers = async () => {
-    try {
-      const res = await axios.get(url + '/users', {
-        "name": "김지우",
-        "email": "example@goolge.com",
-        "password": "example1234!"
-      });
-      console.log(res.data);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const login = async () => {
     try {
       console.log('email', email, 'password', password);

@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     marginLeft: widthPercentage(5),
     paddingVertical: heightPercentage(10),
     paddingRight: widthPercentage(15),
+    lineHeight: 20,
   },
   text: {
     textAlign: 'center',
@@ -145,6 +146,15 @@ const styles = StyleSheet.create({
     width: 2,
     height: 2,
     backgroundColor: '#3D425C',
+  },
+
+  timeStamp: {
+    includeFontPadding: false,
+    color: '#555',
+    fontSize: fontPercentage(14),
+    fontWeight: 300,
+    marginLeft: widthPercentage(5),
+    marginTop: heightPercentage(10),
   },
   inprogress: {
     marginTop: -8,

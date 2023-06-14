@@ -33,15 +33,12 @@ const styles = StyleSheet.create({
     borderColor: '#bbb',
     borderRadius: 40,
   },
-  buttonContainer: {
-    backgroundColor: '#fff',
-    paddingVertical: heightPercentage(30),
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   seekbar: {
     width: '100%',
+    paddingTop: heightPercentage(15),
+    paddingBottom: heightPercentage(25),
+    paddingHorizontal: widthPercentage(20),
+    backgroundColor: 'white',
   },
   track: {
     height: 2,
@@ -88,6 +85,7 @@ const styles = StyleSheet.create({
     marginTop: heightPercentage(25),
   },
   speech: {
+    width: '90%',
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
@@ -109,6 +107,7 @@ const styles = StyleSheet.create({
   },
   row: {
     width: '100%',
+    alignItems: 'flex-end',
     flexDirection: 'row',
   },
   contents: {
@@ -128,11 +127,18 @@ const styles = StyleSheet.create({
   timeStamp: {
     includeFontPadding: false,
     color: '#555',
-    fontSize: fontPercentage(16),
+    fontSize: fontPercentage(14),
     fontWeight: 300,
     marginLeft: widthPercentage(5),
+    marginTop: heightPercentage(10),
   },
-
+  buttonContainer: {
+    backgroundColor: '#fff',
+    paddingVertical: heightPercentage(30),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   modalContainer: {
     marginHorizontal: widthPercentage(40),
     paddingHorizontal: widthPercentage(20),
@@ -271,6 +277,12 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  profileImg: {
+    width: widthPercentage(35),
+    height: widthPercentage(35),
+    borderRadius: 30,
+    marginRight: widthPercentage(7),
+  }
 });
 
 export default styles;
