@@ -27,7 +27,7 @@ const FirstRoute = ({navigation, id}) => {
   const getMeetings = async () => {
     try {
       const res = await axios.get(url + '/meetings/');
-      // console.log('all meetings ========', res.data);
+      console.log('all meetings ========', res.data);
       setRooms(res.data);
     } catch (e) {
       console.log(e);
@@ -50,10 +50,10 @@ const FirstRoute = ({navigation, id}) => {
   }, [navigation]);
 
   useEffect(() => {
-    Icon.loadFont().catch(error => {
+    Icon?.loadFont().catch(error => {
       console.info(error);
     });
-    Ionicons.loadFont().catch(error => {
+    Ionicons?.loadFont().catch(error => {
       console.info(error);
     });
     getMeetings();
@@ -83,7 +83,7 @@ const FirstRoute = ({navigation, id}) => {
     //     duration: 13,
     //   },
     // ];
-    // setRooms(tmp);
+    // setRoomregisterSpeakers(tmp);
   }, []);
 
   return (
@@ -98,7 +98,7 @@ const FirstRoute = ({navigation, id}) => {
             onPress={() => {
               return navigation.navigate({
                 name: 'ChatRoom',
-                params: {header: r.name},
+                params: {header: r.name, data: rooms[0]},
               });
             }}>
             <View key={i} style={styles.contentBox}>

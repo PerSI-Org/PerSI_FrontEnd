@@ -21,7 +21,7 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
   const [percent, setPercent] = useState(0);
   const [isAlreadyRecording, setisAlreadyRecording] = useState(false);
   const [isAlreadyPlay, setisAlreadyPlay] = useState(false);
-  const [recordTime, setRecordTime] = useState('00:00');
+  const [recordTime, setRecordTime] = useState('00:00:00');
   const [currentPositionSec, setCurrentPositionSec] = useState(0);
   const [currentDurationSec, setCurrentDurationSec] = useState(0);
   const [filePath, setFilePath] = useState('');
@@ -54,6 +54,15 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
 
     '사람이 사는 곳에서 사방으로 수천 마일 떨어진 사막 한가운데서 길을 잃은 어린아이의 모습이 전혀 아니었다. 나는 마침내 입을 열 수 있게 되자, 겨우 이렇게 말했다. "그런데...... 넌 거기서 뭘 하고 있느냐?" 그러나 그 애는 무슨 중대한 일이나 되는 것처럼 아주 천천히 같은 말을 되풀이했다. "저...... 양 한 마리만 그려 줘요......" ',
   ];
+
+  const changeTime = async seconds => {
+    // 50 / duration
+    if (seconds !== undefined) {
+      let seektime = parseInt((seconds / 100) * currentDurationSec, 10);
+      setCurrentPositionSec(seektime);
+      audioRecorderPlayer.seekToPlayer(seektime);
+    }
+  };
 
   const uploadFile = async () => {
     let body = new FormData();
@@ -150,8 +159,12 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
   };
 
   useEffect(() => {
-    Icon.loadFont();
-    Ionicons.loadFont();
+    Icon?.loadFont().catch(error => {
+      console.info(error);
+    });
+    Ionicons?.loadFont().catch(error => {
+      console.info(error);
+    });
     checkRecord();
   }, []);
 
@@ -237,7 +250,7 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
                         <View style={styles.inprogress}>
                           <Text style={[styles.textLight, styles.timeStamp]}>
                             {!inprogress
-                              ? currentPositionSec
+                              ? '00:00:00'
                               : audioRecorderPlayer.mmssss(
                                   Math.floor(currentPositionSec),
                                 )}
@@ -261,7 +274,7 @@ const RecordModal = ({visible, setVisible, setVoice}) => {
                           )}
                           <Text style={[styles.textLight, styles.timeStamp]}>
                             {!inprogress
-                              ? currentDurationSec
+                              ? '00:00:00'
                               : audioRecorderPlayer.mmssss(
                                   Math.floor(currentDurationSec),
                                 )}

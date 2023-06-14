@@ -147,6 +147,15 @@ const styles = StyleSheet.create({
     height: 2,
     backgroundColor: '#3D425C',
   },
+
+  timeStamp: {
+    includeFontPadding: false,
+    color: '#555',
+    fontSize: fontPercentage(14),
+    fontWeight: 300,
+    marginLeft: widthPercentage(5),
+    marginTop: heightPercentage(10),
+  },
   inprogress: {
     marginTop: -8,
     flexDirection: 'row',

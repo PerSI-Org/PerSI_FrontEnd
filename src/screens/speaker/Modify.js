@@ -24,8 +24,8 @@ import url from '/utils/backend';
 import axios from 'axios';
 import WaitModal from '/components/WaitModal';
 
-Icon.loadFont().catch(error => {
-  console.info(error);
+Icon?.loadFont().catch(error => {
+  console.log(error);
 });
 
 const Modify = ({route}) => {
@@ -36,6 +36,7 @@ const Modify = ({route}) => {
   const [recordedVoice, setRecordedVoice] = useState('');
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [result, setResult] = useState([]);
+  const [register, setRegister] = useState(0);
   const {getSpeaker} = route.params;
 
   const id = route.params.id;
@@ -46,6 +47,7 @@ const Modify = ({route}) => {
       const res = await axios.get(url + '/speakers/' + id);
       console.log('Existing Info: ', res.data);
       setName(res.data.name);
+      setRegister(res.data.register_number);
       setResult(res.data.call_samples);
       setImg(res.data.profile_image);
       setRecordedVoice(res.data.voice_sample);
@@ -60,10 +62,10 @@ const Modify = ({route}) => {
       let body = new FormData();
       body.append('file', {
         uri: img,
-        type: 'image/jpeg',
-        name: 'photo.jpg',
+        type: 'image/png',
+        name: 'photo.png',
       });
-      fetch(url + '/uploadfiles/', {
+      fetch(url + '/uploadfile/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -73,8 +75,8 @@ const Modify = ({route}) => {
       })
         .then(response => response.json())
         .then(res => {
-          console.log('uploadfile url: ', res.url);
-          updateSpeakerVoice(res.url);
+          console.log('uploadfile url: ', res);
+          updateSpeakerVoice(res.file_url);
         })
         .catch(error => {
           console.error('Errors:', error);
@@ -89,10 +91,10 @@ const Modify = ({route}) => {
   const updateSpeakerVoice = async image => {
     try {
       console.log('image url: ', image);
-      const res = await axios.post(url + '/speakers/', {
+      const res = await axios.put(url + '/speakers/' + id, {
         name: name,
         profile_image: image,
-        user_id: id,
+        register_number: register,
       });
       console.log('수정 성공~!', res.data);
       setIsConfirmVisible(true);
@@ -125,6 +127,10 @@ const Modify = ({route}) => {
       throw err;
     }
   };
+  
+  useEffect(() => {
+    console.log('im 바뀜:', img);
+  }, [img]);
 
   useEffect(() => {
     getUserInfo();
@@ -190,7 +196,7 @@ const Modify = ({route}) => {
             underlineColorAndroid="transparent"
           />
         </View>
-        <View style={styles.itemBox}>
+        {/* <View style={styles.itemBox}>
           <Text style={styles.title}>음성 등록</Text>
           <Text style={styles.desc}>
             목소리 녹음 또는 통화 파일 업로드를 통해{' '}
@@ -232,19 +238,19 @@ const Modify = ({route}) => {
               </View>
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
         {result && (
           <View style={styles.itemBox}>
             {result?.length > 0 && (
               <Text style={styles.filesTitle}>등록된 통화 파일</Text>
             )}
-            {result.map((r, i) => (
+            {result?.map((r, i) => (
               <View key={i} style={styles.fileBox}>
                 <Image
                   style={styles.fileImg}
                   source={require('/assets/images/file.png')}
                 />
-                <Text style={styles.fileName}>{r.slice(44)}</Text>
+                <Text style={styles.fileName}>{r!=='' && r?.slice(44)}</Text>
                 <TouchableOpacity
                   onPress={() => {
                     let tmp = result.splice(i, 1);

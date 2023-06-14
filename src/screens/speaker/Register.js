@@ -24,7 +24,7 @@ import url from '/utils/backend';
 import axios from 'axios';
 import WaitModal from '/components/WaitModal';
 
-Icon.loadFont().catch(error => {
+Icon?.loadFont().catch(error => {
   console.info(error);
 });
 
@@ -36,7 +36,9 @@ const Register = ({route}) => {
   const [recordedVoice, setRecordedVoice] = useState('');
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [result, setResult] = useState([]);
+  const [idx, setIdx] = useState(-1);
   const [isWaitVisible, setIsWaitVisible] = useState(false);
+
   const {getSpeaker} = route.params;
 
   const id = route.params.id;
@@ -47,10 +49,10 @@ const Register = ({route}) => {
       let body = new FormData();
       body.append('file', {
         uri: img,
-        type: 'image/jpeg',
-        name: 'photo.jpg',
+        type: 'image/png',
+        name: 'photo.png',
       });
-      fetch(url + '/uploadfiles/', {
+      fetch(url + '/uploadfile/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -60,11 +62,11 @@ const Register = ({route}) => {
       })
         .then(response => response.json())
         .then(res => {
-          console.log('uploadfile url: ', res.url);
+          console.log('uploadfile url: ', res.file_url);
           if (recordedVoice) {
-            addSpeakerVoice(res.url);
+            addSpeakerVoice(res.file_url);
           } else {
-            uploadFile(res.url);
+            uploadFile(res.urfile_urll);
           }
         })
         .catch(error => {
@@ -85,9 +87,9 @@ const Register = ({route}) => {
     console.log('통화 파일 업로드 중');
     let body = new FormData();
     result.map((r, i) => {
-      console.log('r: ', r.uri);
+      console.log('r: ', r);
       body.append('file', {
-        uri: r.uri,
+        uri: r,
         type: 'audio/*',
         name: 'audio.m4a',
       });
@@ -129,9 +131,7 @@ const Register = ({route}) => {
   const concatCallFiles = async sid => {
     try {
       console.log('speaker id: ', sid);
-      const res = await axios.post(url + '/speakers/concat_call_data', {
-        speaker_id: sid,
-      });
+      const res = await axios.post(url + '/speakers/concat_call_data?speaker_id=' + sid);
       console.log('addSpeakerVoice res: ', res.data);
       registerSpeaker(sid);
     } catch (e) {
@@ -156,6 +156,9 @@ const Register = ({route}) => {
       console.log(e);
     }
   };
+  function sleep(sec) {
+    return new Promise(resolve => setTimeout(resolve, sec * 1000));
+  }
 
   // Voice, Call last) register Speaker
   const registerSpeaker = async sid => {
@@ -165,15 +168,16 @@ const Register = ({route}) => {
         speaker_id: sid,
       });
       console.log('드드드디어 성공~!', res.data);
+      await sleep(2);
       setIsWaitVisible(false);
       setIsConfirmVisible(true);
       getSpeaker();
+      navigation.pop();
     } catch (e) {
       setIsWaitVisible(false);
       console.log(e);
     }
   };
-
   // 프로필 사진 업로드
   const addImage = () => {
     launchImageLibrary({}, response => {
@@ -196,6 +200,16 @@ const Register = ({route}) => {
       throw err;
     }
   };
+
+  // 녹음된 파일
+  useEffect(() => {
+    if(idx !== -1){
+      const newArray = result.filter((_, index) => index !== idx);
+      // console.log(res.length, tmp);
+      setResult(newArray);
+      setIdx(-1);
+    }
+  }, [idx]);
 
   // 녹음된 파일
   useEffect(() => {
@@ -280,13 +294,16 @@ const Register = ({route}) => {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => {
-                DocumentPicker.pick({
+              onPress={async () => {
+                const response = await DocumentPicker.pick({
                   allowMultiSelection: true,
                   type: types.audio,
                 })
-                  .then(setResult)
-                  .catch(handleError);
+                const uriArray = response.map(obj => obj.uri);
+                console.log(uriArray);
+                setResult(uriArray);
+                  // .then(console.log(response)) //setResult(response.assets[0].uri)
+                  // .catch(handleError);
               }}>
               <View style={styles.recordingButton}>
                 <View style={styles.colCenter}>
@@ -300,20 +317,19 @@ const Register = ({route}) => {
             </TouchableOpacity>
           </View>
         </View>
-        {result?.length > 0 && (
+        {result.length > 0 && (
           <View style={styles.itemBox}>
             <Text style={styles.filesTitle}>등록된 통화 파일</Text>
-            {result.map((r, i) => (
+            {result?.map((r, i) => (
               <View key={i} style={styles.fileBox}>
                 <Image
                   style={styles.fileImg}
                   source={require('/assets/images/file.png')}
                 />
-                <Text style={styles.fileName}>{r.slice(44)}</Text>
+                <Text style={styles.fileName}>{"..." + r.slice(-24)}</Text>
                 <TouchableOpacity
                   onPress={() => {
-                    let tmp = result.splice(i, 1);
-                    setResult(tmp);
+                    setIdx(i);
                   }}>
                   <Icon name="close" size={20} color="#3D425C" />
                 </TouchableOpacity>
